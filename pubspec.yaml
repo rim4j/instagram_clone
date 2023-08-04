@@ -37,7 +37,6 @@ dependencies:
   google: ^0.0.1
   google_fonts: ^5.1.0
   lottie: ^2.5.0
-  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:
