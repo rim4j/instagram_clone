@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/config/theme/theme.dart';
+import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
 import 'package:instagram_clone/features/intro/presentation/pages/splash_page.dart';
+import 'package:instagram_clone/locator.dart';
 
 void main() {
-  runApp(const MyApp());
+  //init locator
+  setup();
+
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => locator<IntroBloc>()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
