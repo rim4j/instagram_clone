@@ -6,6 +6,8 @@ ThemeData lightTheme = ThemeData(
   colorScheme: const ColorScheme.light(
     background: AppColorsLight.backGround,
     primary: AppColorsLight.primary,
+    onPrimary: AppColorsDark.grey,
+    secondary: AppColorsLight.secondary,
   ),
 );
 
@@ -14,5 +16,7 @@ ThemeData darkTheme = ThemeData(
   colorScheme: const ColorScheme.dark(
     background: AppColorsDark.backGround,
     primary: AppColorsDark.primary,
+    onPrimary: AppColorsDark.grey,
+    secondary: AppColorsDark.secondary,
   ),
 );

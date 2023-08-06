@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:instagram_clone/config/routes/on_generate_route.dart';
 import 'package:instagram_clone/config/theme/theme.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
 import 'package:instagram_clone/features/intro/presentation/pages/splash_page.dart';
@@ -29,8 +30,10 @@ class MyApp extends StatelessWidget {
       title: 'instagram clone',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.light,
-      home: const SplashPage(),
+      themeMode: ThemeMode.dark,
+      initialRoute: "/",
+      onGenerateRoute: OnGenerateRoute.route,
+      routes: {"/": (context) => const SplashPage()},
     );
   }
 }

@@ -6,12 +6,14 @@ class CustomButton extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
   final bool? loading;
+  final AppFontSize appFontSize;
 
   const CustomButton({
     Key? key,
     required this.title,
     required this.onTap,
     this.loading,
+    required this.appFontSize,
   }) : super(key: key);
 
   @override
@@ -21,8 +23,9 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: loading == true ? () {} : onTap,
       style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.grey,
         backgroundColor: colorScheme.primary,
-        minimumSize: const Size(double.infinity, 50),
+        minimumSize: const Size(double.infinity, 60),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -37,7 +40,10 @@ class CustomButton extends StatelessWidget {
             )
           : Text(
               title,
-              style: robotoMedium.copyWith(color: Colors.white),
+              style: robotoMedium.copyWith(
+                color: Colors.white,
+                fontSize: appFontSize.mediumFontSize,
+              ),
             ),
     );
   }

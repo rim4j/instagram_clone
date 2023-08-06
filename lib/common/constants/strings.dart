@@ -1,4 +1,6 @@
 class Strings {
   Strings._();
-  static const welcome = "Welcome to instagram clone";
+  static const instagram = "Instagram";
+  static const signIn = "Sign in to";
+  static const enterDetails = "Enter your details below";
 }
