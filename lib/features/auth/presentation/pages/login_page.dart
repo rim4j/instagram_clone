@@ -6,6 +6,7 @@ import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/common/constants/strings.dart';
 import 'package:instagram_clone/common/widgets/custom_button.dart';
 import 'package:instagram_clone/common/widgets/input_text.dart';
+import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 
 class LoginPage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
               //title
               SizedBox(height: size.height * 0.1),
               Text(
-                Strings.signIn,
+                Strings.login,
                 style: robotoBold.copyWith(
                   fontSize: 36,
                   fontWeight: FontWeight.w900,
@@ -80,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: Dimens.small),
+                      //email
                       InputText(
                         controller: gmailController,
                         validator: (value) {
@@ -121,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: Dimens.small),
+                      //password
                       InputText(
                         controller: passwordController,
                         validator: (value) {
@@ -199,7 +202,8 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: size.height * 0.08),
 
               GestureDetector(
-                onTap: () {},
+                onTap: () =>
+                    Navigator.pushNamed(context, RouteNames.registerPage),
                 child: Text.rich(TextSpan(
                     text: "Not a member?",
                     style: robotoMedium.copyWith(
