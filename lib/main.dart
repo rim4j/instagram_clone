@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:instagram_clone/common/bloc/bottom_nav.dart';
 import 'package:instagram_clone/config/routes/on_generate_route.dart';
 import 'package:instagram_clone/config/theme/theme.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
@@ -14,6 +15,7 @@ void main() {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => locator<IntroBloc>()),
+        BlocProvider(create: (_) => BottomNavCubit()),
       ],
       child: const MyApp(),
     ),
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'instagram clone',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       initialRoute: "/",
       onGenerateRoute: OnGenerateRoute.route,
       routes: {"/": (context) => const SplashPage()},

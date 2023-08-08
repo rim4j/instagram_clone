@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/common/widgets/main_wrapper.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/auth/presentation/pages/login_page.dart';
@@ -12,6 +13,9 @@ class OnGenerateRoute {
     switch (settings.name) {
       case RouteNames.loginPage:
         return routeBuilder(const LoginPage());
+
+      case RouteNames.mainWrapper:
+        return routeBuilder(const MainWrapper());
 
       case RouteNames.registerPage:
         return routeBuilder(const RegisterPage());

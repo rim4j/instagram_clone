@@ -39,7 +39,8 @@ class _SplashPageState extends State<SplashPage> {
               //do something for authenticated
               if (introState.checkConnectionStatus is CheckConnectionOn) {
                 Future.delayed(const Duration(seconds: 4)).then((value) {
-                  Navigator.pushReplacementNamed(context, RouteNames.loginPage);
+                  Navigator.pushReplacementNamed(
+                      context, RouteNames.mainWrapper);
                 });
               }
             },
