@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/bloc/bottom_nav.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
@@ -56,9 +57,9 @@ class MainWrapper extends StatelessWidget {
           children: [
             Row(
               children: [
-                Image.asset(
-                  IMAGES.logo,
-                  height: size.height / 14,
+                SvgPicture.asset(
+                  IMAGES.logoInstagram,
+                  width: size.width / 14,
                 ),
                 const SizedBox(width: Dimens.small),
                 Text(

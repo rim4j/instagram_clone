@@ -55,7 +55,7 @@ class BottomNav extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.add,
                     ),
                   ),
