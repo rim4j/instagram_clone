@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
+import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,6 +21,8 @@ class HomePage extends StatelessWidget {
         itemCount: 20,
         itemBuilder: (context, index) {
           return PostItem(
+            onTap: () =>
+                Navigator.pushNamed(context, RouteNames.postDetailsPage),
             size: size,
             appFontSize: appFontSize,
             colorScheme: colorScheme,
@@ -36,11 +39,13 @@ class PostItem extends StatelessWidget {
     required this.size,
     required this.appFontSize,
     required this.colorScheme,
+    required this.onTap,
   });
 
   final Size size;
   final AppFontSize appFontSize;
   final ColorScheme colorScheme;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -82,29 +87,32 @@ class PostItem extends StatelessWidget {
 
         Stack(
           children: [
-            SizedBox(
-              width: size.width,
-              height: size.width,
-              child: CachedNetworkImage(
-                imageUrl:
-                    "https://i0.wp.com/www.flutterbeads.com/wp-content/uploads/2022/01/add-image-in-flutter-hero.png",
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
+            GestureDetector(
+              onTap: onTap,
+              child: SizedBox(
+                width: size.width,
+                height: size.width,
+                child: CachedNetworkImage(
+                  imageUrl:
+                      "https://i0.wp.com/www.flutterbeads.com/wp-content/uploads/2022/01/add-image-in-flutter-hero.png",
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                placeholder: (context, url) => SizedBox(
-                  width: size.width / 3,
-                  height: size.width / 3,
-                  child: SpinKitPulse(
-                    color: colorScheme.primary,
-                    size: 100,
+                  placeholder: (context, url) => SizedBox(
+                    width: size.width / 3,
+                    height: size.width / 3,
+                    child: SpinKitPulse(
+                      color: colorScheme.primary,
+                      size: 100,
+                    ),
                   ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
 
@@ -140,38 +148,61 @@ class PostItem extends StatelessWidget {
                                   borderRadius:
                                       BorderRadius.circular(Dimens.large),
                                 ),
-                                child: const Row(
-                                  children: [
-                                    SizedBox(width: Dimens.medium),
-                                    Icon(FontAwesomeIcons.heart),
-                                    SizedBox(width: Dimens.small),
-                                    Text("5.2 k"),
-                                    SizedBox(width: Dimens.medium),
-                                  ],
+                                child: GestureDetector(
+                                  onTap: () {
+                                    print("like");
+                                  },
+                                  child: const Row(
+                                    children: [
+                                      SizedBox(width: Dimens.medium),
+                                      Icon(FontAwesomeIcons.heart),
+                                      SizedBox(width: Dimens.small),
+                                      Text("5.2 k"),
+                                      SizedBox(width: Dimens.medium),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
 
                             //comment
 
-                            const Row(
-                              children: [
-                                Icon(FontAwesomeIcons.comment),
-                                SizedBox(width: Dimens.small),
-                                Text("140"),
-                              ],
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, RouteNames.postDetailsPage);
+                              },
+                              child: const Row(
+                                children: [
+                                  Icon(FontAwesomeIcons.comment),
+                                  SizedBox(width: Dimens.small),
+                                  Text("140"),
+                                ],
+                              ),
                             ),
                             const SizedBox(width: Dimens.medium),
                             //share
-                            const Icon(
-                              FontAwesomeIcons.paperPlane,
+                            GestureDetector(
+                              onTap: () {
+                                print("share post");
+                              },
+                              child: const Icon(
+                                FontAwesomeIcons.paperPlane,
+                              ),
                             ),
                           ],
                         ),
-                        const Padding(
-                          padding: EdgeInsets.all(12),
-                          child: Icon(
-                            FontAwesomeIcons.bookmark,
+                        GestureDetector(
+                          onTap: () {
+                            print("added to the bookmark");
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Dimens.large,
+                            ),
+                            child: Icon(
+                              FontAwesomeIcons.bookmark,
+                            ),
                           ),
                         ),
                       ],

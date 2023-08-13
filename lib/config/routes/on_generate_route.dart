@@ -4,6 +4,7 @@ import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/auth/presentation/pages/login_page.dart';
 import 'package:instagram_clone/features/auth/presentation/pages/register_page.dart';
+import 'package:instagram_clone/features/home/presentation/pages/post_details_page.dart';
 
 class OnGenerateRoute {
   OnGenerateRoute._();
@@ -19,6 +20,8 @@ class OnGenerateRoute {
 
       case RouteNames.registerPage:
         return routeBuilder(const RegisterPage());
+      case RouteNames.postDetailsPage:
+        return routeBuilder(const PostDetailsPage());
 
       default:
         return routeBuilder(const NoPageFound());
