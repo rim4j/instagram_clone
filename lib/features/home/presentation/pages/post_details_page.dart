@@ -6,19 +6,24 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/strings.dart';
-import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:readmore/readmore.dart';
 
-class PostDetailsPage extends StatelessWidget {
+class PostDetailsPage extends StatefulWidget {
   const PostDetailsPage({super.key});
 
+  @override
+  State<PostDetailsPage> createState() => _PostDetailsPageState();
+}
+
+class _PostDetailsPageState extends State<PostDetailsPage> {
   @override
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
     TextEditingController commentController = TextEditingController();
+    bool isReply = false;
 
     return Scaffold(
       backgroundColor: colorScheme.background,
@@ -139,10 +144,7 @@ class PostDetailsPage extends StatelessWidget {
                                     //comment
 
                                     GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(context,
-                                            RouteNames.postDetailsPage);
-                                      },
+                                      onTap: () {},
                                       child: const Row(
                                         children: [
                                           Icon(FontAwesomeIcons.comment),
@@ -211,11 +213,12 @@ class PostDetailsPage extends StatelessWidget {
                 ),
 
                 // comments
+
                 ListView.builder(
                   shrinkWrap: true,
                   primary: false,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 10,
+                  itemCount: 1,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: EdgeInsets.fromLTRB(
@@ -273,12 +276,19 @@ class PostDetailsPage extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(width: 5),
-                                      Text(
-                                        "Replay",
-                                        style: robotoMedium.copyWith(
-                                          fontSize:
-                                              appFontSize.verySmallFontSize,
-                                          color: colorScheme.onSecondary,
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isReply = !isReply;
+                                          });
+                                        },
+                                        child: Text(
+                                          "Replay",
+                                          style: robotoMedium.copyWith(
+                                            fontSize:
+                                                appFontSize.verySmallFontSize,
+                                            color: colorScheme.onSecondary,
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(width: 5),
@@ -309,10 +319,8 @@ class PostDetailsPage extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
+          Align(
+            alignment: Alignment.bottomCenter,
             child: Container(
               height: 80,
               color: colorScheme.background,
