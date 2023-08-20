@@ -19,3 +19,10 @@ class AppColorsDark {
   static const Color backGround = Color(0xFF0F111F);
   static const Color grey = Color(0xFF9797BD);
 }
+
+class GradientColors {
+  static const List<Color> profileCover = [
+    Color.fromARGB(0, 0, 0, 0),
+    Color.fromARGB(215, 0, 0, 0),
+  ];
+}

@@ -2,8 +2,10 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
+import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 
@@ -16,6 +18,39 @@ class HomePage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: colorScheme.background,
+        elevation: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Row(
+              children: [
+                SvgPicture.asset(
+                  IMAGES.logoInstagram,
+                  width: size.width / 14,
+                ),
+                const SizedBox(width: Dimens.small),
+                Text(
+                  "Instagram",
+                  style: robotoMedium.copyWith(
+                    fontSize: appFontSize.veryLargeFontSize,
+                    color: colorScheme.onSecondary,
+                  ),
+                ),
+              ],
+            ),
+            Expanded(child: Container()),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                FontAwesomeIcons.paperPlane,
+                color: colorScheme.onSecondary,
+              ),
+            )
+          ],
+        ),
+      ),
       backgroundColor: colorScheme.background,
       body: ListView.builder(
         itemCount: 20,

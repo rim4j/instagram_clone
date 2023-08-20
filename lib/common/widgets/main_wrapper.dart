@@ -7,6 +7,7 @@ import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/common/widgets/bottom_nav.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/auth/presentation/pages/account_page.dart';
 import 'package:instagram_clone/features/home/presentation/pages/home_page.dart';
 import 'package:instagram_clone/features/home/presentation/pages/search_page.dart';
 
@@ -35,49 +36,11 @@ class MainWrapper extends StatelessWidget {
         ),
       ),
       const SearchPage(),
-      Container(
-        color: Colors.red,
-        child: const Center(
-          child: Text("account"),
-        ),
-      ),
+      const AccountPage(),
     ];
 
     return Scaffold(
       backgroundColor: colorScheme.background,
-      appBar: AppBar(
-        backgroundColor: colorScheme.background,
-        elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Row(
-              children: [
-                SvgPicture.asset(
-                  IMAGES.logoInstagram,
-                  width: size.width / 14,
-                ),
-                const SizedBox(width: Dimens.small),
-                Text(
-                  "Instagram",
-                  style: robotoMedium.copyWith(
-                    fontSize: appFontSize.veryLargeFontSize,
-                    color: colorScheme.onSecondary,
-                  ),
-                ),
-              ],
-            ),
-            Expanded(child: Container()),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                FontAwesomeIcons.paperPlane,
-                color: colorScheme.onSecondary,
-              ),
-            )
-          ],
-        ),
-      ),
       body: Stack(
         children: [
           PageView(

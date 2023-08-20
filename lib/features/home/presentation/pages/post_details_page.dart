@@ -341,6 +341,11 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                       width: size.width / 1.8,
                       child: TextField(
                         controller: commentController,
+                        style: robotoRegular,
+                        decoration: InputDecoration(
+                          hintText: "comment",
+                          hintStyle: robotoRegular,
+                        ),
                       ),
                     ),
                     const Text("Post"),

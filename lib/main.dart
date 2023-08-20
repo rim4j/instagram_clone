@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'instagram clone',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       initialRoute: "/",
       onGenerateRoute: OnGenerateRoute.route,
       routes: {"/": (context) => const SplashPage()},
