@@ -4,4 +4,5 @@ class RouteNames {
   static const loginPage = "loginPage";
   static const mainWrapper = "mainWrapper";
   static const postDetailsPage = "postDetailsPage";
+  static const editProfilePage = "editProfilePage";
 }

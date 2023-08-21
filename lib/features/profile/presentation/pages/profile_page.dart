@@ -3,20 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
+import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_colors.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 
-class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  State<AccountPage> createState() => _AccountPageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _AccountPageState extends State<AccountPage>
-    with TickerProviderStateMixin {
+class _ProfilePageState extends State<ProfilePage> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
+
   bool isGrid = true;
 
   @override
@@ -27,6 +28,79 @@ class _AccountPageState extends State<AccountPage>
 
     return Scaffold(
       backgroundColor: colorScheme.background,
+      key: _key,
+      drawer: Drawer(
+        backgroundColor: colorScheme.background,
+        child: ListView(
+          children: [
+            ListTile(
+              title: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Text(
+                  "Edit profile",
+                  style: robotoMedium.copyWith(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              onTap: () {
+                _key.currentState!.closeDrawer();
+                Navigator.pushNamed(context, RouteNames.editProfilePage);
+              },
+            ),
+            ListTile(
+              title: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Text(
+                  "Github code",
+                  style: robotoMedium.copyWith(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              onTap: () {
+                _key.currentState!.closeDrawer();
+              },
+            ),
+            ListTile(
+              title: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Dark",
+                      style: robotoMedium.copyWith(
+                        fontSize: 18,
+                      ),
+                    ),
+                    const Icon(Icons.dark_mode)
+                  ],
+                ),
+              ),
+              onTap: () {
+                // _key.currentState!.closeDrawer();
+              },
+            ),
+            SizedBox(height: size.height / 1.8),
+            ListTile(
+              title: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Text(
+                  "Logout",
+                  style: robotoMedium.copyWith(
+                    fontSize: 18,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+              onTap: () {
+                _key.currentState!.closeDrawer();
+              },
+            ),
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -65,11 +139,12 @@ class _AccountPageState extends State<AccountPage>
                         const Icon(Icons.error),
                   ),
                 ),
+                //drawer icon
                 Positioned(
                   right: 10,
                   top: safePadding,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () => _key.currentState!.openDrawer(),
                     icon: Icon(
                       Icons.menu,
                       color: colorScheme.onPrimary,
