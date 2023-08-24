@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/common/bloc/bottom_nav.dart';
 import 'package:instagram_clone/common/widgets/bottom_nav.dart';
+import 'package:instagram_clone/features/post/presentation/pages/create_post_page.dart';
 // import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/profile/presentation/pages/profile_page.dart';
 import 'package:instagram_clone/features/bookmark/presentation/pages/bookmark_page.dart';
@@ -21,12 +22,7 @@ class MainWrapper extends StatelessWidget {
     List<Widget> pages = [
       const HomePage(),
       const BookmarkPage(),
-      Container(
-        color: Colors.red,
-        child: const Center(
-          child: Text("create post"),
-        ),
-      ),
+      const CreatePostPage(),
       const SearchPage(),
       const ProfilePage(),
     ];
