@@ -34,7 +34,7 @@ class BottomNav extends StatelessWidget {
                 heightFactor: 0.6,
                 child: FloatingActionButton(
                   backgroundColor: colorScheme.background,
-                  elevation: 10,
+                  // elevation: 10,
                   onPressed: () {
                     BlocProvider.of<BottomNavCubit>(context)
                         .changeSelectedIndex(2);
@@ -44,6 +44,15 @@ class BottomNav extends StatelessWidget {
                     width: size.width / 7,
                     height: size.width / 7,
                     decoration: BoxDecoration(
+                      color: colorScheme.background,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFFCB39A6).withOpacity(0.4),
+                          spreadRadius: 6,
+                          blurRadius: 10,
+                          offset: const Offset(2, 2),
+                        ),
+                      ],
                       border: const GradientBoxBorder(
                         gradient: LinearGradient(colors: [
                           Color(0xFFCB39A6),

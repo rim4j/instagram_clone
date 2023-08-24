@@ -59,6 +59,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     child: Column(
                       children: [
                         GestureDetector(
+                          onLongPress: () {
+                            setState(() {
+                              selectedImage = null;
+                            });
+                          },
                           onTap: () {
                             _showModalBottomSheet(
                               context,
