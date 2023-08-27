@@ -269,8 +269,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
                   const SizedBox(height: Dimens.large),
+                  //submit edit profile
                   CustomButton(
-                      title: "Edit", onTap: () {}, appFontSize: appFontSize)
+                    title: "Edit",
+                    onTap: () {},
+                    appFontSize: appFontSize,
+                  ),
                 ],
               ),
             ),

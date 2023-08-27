@@ -19,6 +19,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     BlocProvider.of<IntroBloc>(context).add(CheckConnectionEvent());
+    BlocProvider.of<IntroBloc>(context).add(InitIsDarkModeEvent());
     super.initState();
   }
 

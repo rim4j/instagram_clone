@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -7,6 +8,8 @@ import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_colors.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/intro/presentation/bloc/change_theme_status.dart';
+import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -62,24 +65,33 @@ class _ProfilePageState extends State<ProfilePage> {
                 _key.currentState!.closeDrawer();
               },
             ),
-            ListTile(
-              title: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Dark",
-                      style: robotoMedium.copyWith(
-                        fontSize: 18,
-                      ),
+            BlocBuilder<IntroBloc, IntroState>(
+              builder: (context, introState) {
+                DarkMode darkMode = introState.changeThemeStatus as DarkMode;
+
+                return ListTile(
+                  title: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          darkMode.isDarkMode ? "Dark" : "Light",
+                          style: robotoMedium.copyWith(
+                            fontSize: 18,
+                          ),
+                        ),
+                        Icon(darkMode.isDarkMode
+                            ? Icons.dark_mode
+                            : Icons.light_mode)
+                      ],
                     ),
-                    const Icon(Icons.dark_mode)
-                  ],
-                ),
-              ),
-              onTap: () {
-                // _key.currentState!.closeDrawer();
+                  ),
+                  onTap: () {
+                    BlocProvider.of<IntroBloc>(context).add(IsDarkModeEvent());
+                    // _key.currentState!.closeDrawer();
+                  },
+                );
               },
             ),
             SizedBox(height: size.height / 1.8),

@@ -7,7 +7,9 @@ class BookmarkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
+      backgroundColor: colorScheme.background,
       body: SafeArea(
         child: AnimationLimiter(
           child: GridView.custom(
