@@ -202,7 +202,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 const SizedBox(height: Dimens.medium),
                 GestureDetector(
                   onTap: () {
-                    print("selected image from gallery");
                     pickGalleryImage();
                     Navigator.pop(context);
                   },

@@ -5,4 +5,6 @@ class RouteNames {
   static const mainWrapper = "mainWrapper";
   static const postDetailsPage = "postDetailsPage";
   static const editProfilePage = "editProfilePage";
+  static const changeImageProfilePage = "changeImageProfilePage";
+  static const changeCoverProfilePage = "changeCoverProfilePage";
 }

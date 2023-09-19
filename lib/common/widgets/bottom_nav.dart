@@ -47,7 +47,7 @@ class BottomNav extends StatelessWidget {
                       color: colorScheme.background,
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFFCB39A6).withOpacity(0.4),
+                          color: const Color(0xFFCB39A6).withOpacity(0.4),
                           spreadRadius: 6,
                           blurRadius: 10,
                           offset: const Offset(2, 2),
@@ -124,7 +124,7 @@ class BottomNav extends StatelessWidget {
                       },
                       defaultColor: colorScheme.onPrimary,
                       selectedColor: colorScheme.onSecondary,
-                    )
+                    ),
                   ],
                 ),
               ),

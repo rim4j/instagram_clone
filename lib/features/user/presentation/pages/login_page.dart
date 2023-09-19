@@ -1,30 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/icons.dart';
 import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/common/constants/strings.dart';
+import 'package:instagram_clone/common/utils/custom_snackbar.dart';
 import 'package:instagram_clone/common/widgets/custom_button.dart';
 import 'package:instagram_clone/common/widgets/input_text.dart';
+import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/credential_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<LoginPage> {
   TextEditingController gmailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  bool _isObsecuredPassword = true;
-  bool _isObsecuredConfirmPassword = true;
+  bool _isObsecured = true;
+
+  @override
+  void dispose() {
+    gmailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +47,9 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Column(
             children: [
               //title
-              SizedBox(height: size.height * 0.01),
+              SizedBox(height: size.height * 0.1),
               Text(
-                Strings.register,
+                Strings.login,
                 style: robotoBold.copyWith(
                   fontSize: 36,
                   fontWeight: FontWeight.w900,
@@ -70,45 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      //label username
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(Dimens.small, 0, 0, 0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Username",
-                            style: robotoMedium.copyWith(
-                              fontSize: appFontSize.mediumFontSize,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: Dimens.small),
-                      //username
-                      InputText(
-                        controller: usernameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter username";
-                          } else if (value.length < 7) {
-                            return "at least enter 6 characters";
-                          } else if (value.length > 13) {
-                            return "maximum characters is 13";
-                          }
-                          return null;
-                        },
-                        keyBoardType: TextInputType.emailAddress,
-                        hint: "Username",
-                        prefixIcon: Icon(
-                          FontAwesomeIcons.user,
-                          size: 20,
-                          color: colorScheme.onPrimary,
-                        ),
-                        appFontSize: appFontSize,
-                        colorScheme: colorScheme,
-                      ),
-                      const SizedBox(height: Dimens.medium),
-
+                      //label
                       Padding(
                         padding:
                             const EdgeInsets.fromLTRB(Dimens.small, 0, 0, 0),
@@ -149,7 +120,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         appFontSize: appFontSize,
                         colorScheme: colorScheme,
                       ),
-                      const SizedBox(height: Dimens.medium),
+                      const SizedBox(height: Dimens.large),
                       //label
                       Padding(
                         padding:
@@ -165,7 +136,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       const SizedBox(height: Dimens.small),
-
                       //password
                       InputText(
                         controller: passwordController,
@@ -181,16 +151,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         keyBoardType: TextInputType.emailAddress,
                         hint: "Password",
-                        obscureText: _isObsecuredPassword,
+                        obscureText: _isObsecured,
                         suffixIcon: IconButton(
                           color: colorScheme.onPrimary,
                           onPressed: () {
                             setState(() {
-                              _isObsecuredPassword = !_isObsecuredPassword;
+                              _isObsecured = !_isObsecured;
                             });
                           },
                           icon: Icon(
-                            _isObsecuredPassword
+                            _isObsecured
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                           ),
@@ -208,79 +178,64 @@ class _RegisterPageState extends State<RegisterPage> {
                         appFontSize: appFontSize,
                         colorScheme: colorScheme,
                       ),
-                      const SizedBox(height: Dimens.medium),
 
-                      //label
+                      const SizedBox(height: Dimens.small),
+                      //forget password
                       Padding(
                         padding:
-                            const EdgeInsets.fromLTRB(Dimens.small, 0, 0, 0),
+                            const EdgeInsets.fromLTRB(0, 0, Dimens.small, 0),
                         child: Align(
-                          alignment: Alignment.topLeft,
+                          alignment: Alignment.bottomRight,
                           child: Text(
-                            "Confirm password",
+                            "Forget Password?",
                             style: robotoMedium.copyWith(
+                              color: colorScheme.secondary,
                               fontSize: appFontSize.mediumFontSize,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: Dimens.small),
-                      //password
-                      InputText(
-                        controller: confirmPasswordController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter password";
-                          } else if (value.length < 7) {
-                            return "at least enter 6 characters";
-                          } else if (value.length > 13) {
-                            return "maximum characters is 13";
-                          } else if (value != passwordController.text) {
-                            return "password with confirm password is not matches";
-                          }
-                          return null;
-                        },
-                        keyBoardType: TextInputType.emailAddress,
-                        hint: "Confirm password",
-                        obscureText: _isObsecuredConfirmPassword,
-                        suffixIcon: IconButton(
-                          color: colorScheme.onPrimary,
-                          onPressed: () {
-                            setState(() {
-                              _isObsecuredConfirmPassword =
-                                  !_isObsecuredConfirmPassword;
-                            });
-                          },
-                          icon: Icon(
-                            _isObsecuredConfirmPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                        ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: SizedBox(
-                            height: 20,
-                            child: SvgPicture.asset(
-                              ICONS.password,
-                              color: colorScheme.onPrimary,
-                            ),
-                          ),
-                        ),
-                        appFontSize: appFontSize,
-                        colorScheme: colorScheme,
-                      ),
-
                       const SizedBox(height: Dimens.large),
 
-                      CustomButton(
-                        appFontSize: appFontSize,
-                        title: "Register",
-                        onTap: () {
-                          if (_formKey.currentState!.validate()) {
-                            print(gmailController.text);
-                            print(passwordController.text);
+                      BlocConsumer<UserBloc, UserState>(
+                        listener: (context, userState) {
+                          final credentialStatus = userState.credentialStatus;
+
+                          if (credentialStatus is CredentialSuccess) {
+                            CredentialSuccess success = credentialStatus;
+                            CustomSnackBars.showSnackSuccess(
+                                context, success.message);
+
+                            Navigator.pushNamedAndRemoveUntil(context,
+                                RouteNames.mainWrapper, (route) => false);
                           }
+                          if (credentialStatus is CredentialFailed) {
+                            CredentialFailed failed = credentialStatus;
+                            CustomSnackBars.showSnackError(
+                                context, failed.message);
+                          }
+                        },
+                        builder: (context, userState) {
+                          return CustomButton(
+                            appFontSize: appFontSize,
+                            title: "Login",
+                            loading:
+                                userState.credentialStatus is CredentialLoading
+                                    ? true
+                                    : false,
+                            onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                BlocProvider.of<UserBloc>(context)
+                                    .add(SignInUserEvent(
+                                        userEntity: UserEntity(
+                                  email: gmailController.text,
+                                  password: passwordController.text,
+                                )));
+                                print(gmailController.text);
+                                print(passwordController.text);
+                              }
+                            },
+                          );
                         },
                       ),
                     ],
@@ -291,15 +246,16 @@ class _RegisterPageState extends State<RegisterPage> {
               SizedBox(height: size.height * 0.08),
 
               GestureDetector(
-                onTap: () => Navigator.pop(context),
+                onTap: () =>
+                    Navigator.pushNamed(context, RouteNames.registerPage),
                 child: Text.rich(TextSpan(
-                    text: "Already have an account?",
+                    text: "Not a member?",
                     style: robotoMedium.copyWith(
                       fontSize: appFontSize.largeFontSize,
                     ),
                     children: [
                       TextSpan(
-                        text: " Login",
+                        text: " Register",
                         style: robotoMedium.copyWith(
                           fontSize: appFontSize.largeFontSize,
                           color: colorScheme.secondary,

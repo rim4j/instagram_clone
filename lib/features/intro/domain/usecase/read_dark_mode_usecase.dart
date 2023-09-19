@@ -1,7 +1,7 @@
 import 'package:instagram_clone/common/usecase/use_case.dart';
 import 'package:instagram_clone/features/intro/domain/repository/intro_repository.dart';
 
-class ReadDarkModeUseCase implements UseCase<void, bool> {
+class ReadDarkModeUseCase implements UseCase<bool, void> {
   final IntroRepository introRepository;
 
   ReadDarkModeUseCase({

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/common/bloc/bottom_nav.dart';
@@ -6,9 +7,12 @@ import 'package:instagram_clone/config/theme/theme.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/change_theme_status.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
 import 'package:instagram_clone/features/intro/presentation/pages/splash_page.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 import 'package:instagram_clone/locator.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   //init locator
   setup();
 
@@ -16,6 +20,7 @@ void main() {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => locator<IntroBloc>()),
+        BlocProvider(create: (_) => locator<UserBloc>()),
         BlocProvider(create: (_) => BottomNavCubit()),
       ],
       child: const MyApp(),
