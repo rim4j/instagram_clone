@@ -10,11 +10,22 @@ import 'package:instagram_clone/features/intro/domain/usecase/check_connection_u
 import 'package:instagram_clone/features/intro/domain/usecase/read_dark_mode_usecase.dart';
 import 'package:instagram_clone/features/intro/domain/usecase/set_dark_mode_usecase.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
+import 'package:instagram_clone/features/post/data/data_sources/post_remote_data_source.dart';
+import 'package:instagram_clone/features/post/data/data_sources/post_remote_data_source_impl.dart';
+import 'package:instagram_clone/features/post/data/repositories/post_repository_impl.dart';
+import 'package:instagram_clone/features/post/domain/repositories/post_repository.dart';
+import 'package:instagram_clone/features/post/domain/usecases/create_post_usecase.dart';
+import 'package:instagram_clone/features/post/domain/usecases/delete_post_usecase.dart';
+import 'package:instagram_clone/features/post/domain/usecases/like_post_usecase.dart';
+import 'package:instagram_clone/features/post/domain/usecases/read_posts_usecase.dart';
+import 'package:instagram_clone/features/post/domain/usecases/update_post_usecase.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
 import 'package:instagram_clone/features/storage/data/data_source/storage_remote_data_source.dart';
 import 'package:instagram_clone/features/storage/data/data_source/storage_remote_data_source_impl.dart';
 import 'package:instagram_clone/features/storage/data/repository/storage_repository_impl.dart';
 import 'package:instagram_clone/features/storage/domain/repository/storage_repository.dart';
 import 'package:instagram_clone/features/storage/domain/usecase/upload_cover_image_usecase.dart';
+import 'package:instagram_clone/features/storage/domain/usecase/upload_post_image_usecase.dart';
 import 'package:instagram_clone/features/storage/domain/usecase/upload_profile_image_usecase.dart';
 import 'package:instagram_clone/features/user/data/data_sources/user_remote_data_source.dart';
 import 'package:instagram_clone/features/user/data/data_sources/user_remote_data_source_impl.dart';
@@ -64,6 +75,11 @@ void setup() {
   );
   locator.registerSingleton<UploadCoverImageUseCase>(
     UploadCoverImageUseCase(
+      storageRepository: locator(),
+    ),
+  );
+  locator.registerSingleton<UploadPostImageUseCase>(
+    UploadPostImageUseCase(
       storageRepository: locator(),
     ),
   );
@@ -144,6 +160,49 @@ void setup() {
       updateUserUseCase: locator(),
       uploadProfileImageUseCase: locator(),
       uploadCoverImageUseCase: locator(),
+    ),
+  );
+
+  // <--------------->
+  //!post feature
+
+  //data source
+
+  locator.registerSingleton<PostRemoteDataSource>(PostRemoteDataSourceImpl(
+    firebaseFirestore: locator(),
+    firebaseAuth: locator(),
+  ));
+
+  //repository
+
+  locator.registerSingleton<PostRepository>(
+      PostRepositoryImpl(postRemoteDataSource: locator()));
+
+  //use case
+
+  locator.registerSingleton<ReadPostsUseCase>(
+      ReadPostsUseCase(postRepository: locator()));
+
+  locator.registerSingleton<DeletePostUseCase>(
+      DeletePostUseCase(postRepository: locator()));
+
+  locator.registerSingleton<CreatePostUseCase>(
+      CreatePostUseCase(postRepository: locator()));
+
+  locator.registerSingleton<LikePostUseCase>(
+      LikePostUseCase(postRepository: locator()));
+
+  locator.registerSingleton<UpdatePostUseCase>(
+      UpdatePostUseCase(postRepository: locator()));
+
+  //bloc
+  locator.registerSingleton<PostBloc>(
+    PostBloc(
+      readPostsUseCase: locator(),
+      updatePostUseCase: locator(),
+      createPostUseCase: locator(),
+      likePostUseCase: locator(),
+      deletePostUseCase: locator(),
     ),
   );
 }

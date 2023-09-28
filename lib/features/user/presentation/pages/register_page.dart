@@ -12,7 +12,7 @@ import 'package:instagram_clone/common/widgets/input_text.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/credential_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/credential_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 
 class RegisterPage extends StatefulWidget {

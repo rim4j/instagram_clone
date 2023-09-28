@@ -43,4 +43,19 @@ class StorageRemoteDataSourceImpl implements StorageRemoteDataSource {
 
     return imageUrl;
   }
+
+  @override
+  Future<String> uploadPostImage(File file) async {
+    Reference ref = firebaseStorage
+        .ref()
+        .child("posts")
+        .child(firebaseAuth.currentUser!.uid);
+
+    final uploadTask = ref.putFile(file);
+
+    final imageUrl =
+        (await uploadTask.whenComplete(() {})).ref.getDownloadURL();
+
+    return imageUrl;
+  }
 }

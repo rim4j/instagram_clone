@@ -6,7 +6,7 @@ import 'package:instagram_clone/features/user/presentation/pages/change_cover_im
 import 'package:instagram_clone/features/user/presentation/pages/change_profile_image_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/login_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/register_page.dart';
-import 'package:instagram_clone/features/home/presentation/pages/post_details_page.dart';
+import 'package:instagram_clone/features/post/presentation/pages/post_details_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/edit_profile_page.dart';
 
 class OnGenerateRoute {

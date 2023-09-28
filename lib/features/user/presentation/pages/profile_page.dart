@@ -13,7 +13,7 @@ import 'package:instagram_clone/features/intro/presentation/bloc/change_theme_st
 import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 import 'package:instagram_clone/locator.dart';
 

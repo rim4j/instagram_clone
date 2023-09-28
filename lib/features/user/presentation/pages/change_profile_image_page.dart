@@ -9,7 +9,7 @@ import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/widgets/custom_button.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/update_profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/update_profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 
 class ChangeProfileImagePage extends StatefulWidget {
@@ -105,6 +105,8 @@ class _ChangeProfileImagePageState extends State<ChangeProfileImagePage> {
                             ? true
                             : false,
                     onTap: () {
+                      if (selectedImage == null) return;
+
                       BlocProvider.of<UserBloc>(context).add(
                           UpdateProfileImageEvent(
                               user: UserEntity(imageFile: selectedImage)));

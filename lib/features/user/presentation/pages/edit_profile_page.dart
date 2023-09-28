@@ -8,8 +8,8 @@ import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_colors.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/profile_status.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/update_profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/update_profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 
 class EditProfilePage extends StatefulWidget {

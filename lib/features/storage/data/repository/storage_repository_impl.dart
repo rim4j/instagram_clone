@@ -19,4 +19,9 @@ class StorageRepositoryImpl implements StorageRepository {
   Future<String> uploadCoverImage(File file) async {
     return storageRemoteDataSource.uploadCoverImage(file);
   }
+
+  @override
+  Future<String> uploadPostImage(File file) {
+    return storageRemoteDataSource.uploadPostImage(file);
+  }
 }

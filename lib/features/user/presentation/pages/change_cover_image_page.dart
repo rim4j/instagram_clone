@@ -9,7 +9,7 @@ import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/widgets/custom_button.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/update_profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/update_profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 
 class ChangeCoverImagePage extends StatefulWidget {
@@ -105,6 +105,7 @@ class _ChangeCoverImagePageState extends State<ChangeCoverImagePage> {
                             ? true
                             : false,
                     onTap: () {
+                      if (selectedCover == null) return;
                       BlocProvider.of<UserBloc>(context).add(
                           UpdateCoverImageEvent(
                               user: UserEntity(coverFile: selectedCover)));

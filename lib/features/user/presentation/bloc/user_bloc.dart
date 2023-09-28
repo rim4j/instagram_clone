@@ -12,17 +12,18 @@ import 'package:instagram_clone/features/user/domain/usecases/sign_in_user_useca
 import 'package:instagram_clone/features/user/domain/usecases/sign_out_user_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/sign_up_user_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/update_user_usecase.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/auth_status.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/credential_status.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/profile_status.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/update_profile_status.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/users_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/credential_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/update_profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/users_status.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final SignOutUserUseCase signOutUseCase;
+
   final IsSignInUseCase isSignInUseCase;
   final GetCurrentUidUseCase getCurrentUidUseCase;
   //credentials

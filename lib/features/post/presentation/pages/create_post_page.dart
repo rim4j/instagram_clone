@@ -1,10 +1,21 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/widgets/custom_button.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
+import 'package:instagram_clone/features/storage/domain/usecase/upload_post_image_usecase.dart';
+import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
+import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
+import 'package:instagram_clone/locator.dart';
+import 'package:uuid/uuid.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});
@@ -15,6 +26,24 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   final picker = ImagePicker();
+  TextEditingController descriptionController = TextEditingController();
+  bool _uploading = false;
+  @override
+  void initState() {
+    final uid = locator<GetCurrentUidUseCase>().call();
+
+    uid.then((uid) {
+      BlocProvider.of<UserBloc>(context).add(GetProfileEvent(uid: uid));
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    descriptionController.dispose();
+    super.dispose();
+  }
 
   File? selectedImage;
 
@@ -23,7 +52,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
-    TextEditingController descriptionController = TextEditingController();
 
     Future pickGalleryImage() async {
       final pickedFile =
@@ -44,6 +72,38 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       setState(() {
         selectedImage = File(pickedFile.path);
+      });
+    }
+
+    _createSubmitPost({required String image, required UserEntity user}) {
+      BlocProvider.of<PostBloc>(context).add(CreatePostEvent(
+          post: PostEntity(
+        description: descriptionController.text,
+        createAt: Timestamp.now(),
+        creatorUid: user.uid,
+        likes: const [],
+        postId: const Uuid().v1(),
+        postImageUrl: image,
+        totalComments: 0,
+        totalLikes: 0,
+        userProfileUrl: user.profileUrl,
+        username: user.username,
+      )));
+      setState(() {
+        _uploading = false;
+        selectedImage = null;
+        descriptionController.clear();
+      });
+    }
+
+    Future _submitPost({required UserEntity user}) async {
+      setState(() {
+        _uploading = true;
+      });
+      locator<UploadPostImageUseCase>()
+          .call(params: selectedImage)
+          .then((value) {
+        _createSubmitPost(image: value, user: user);
       });
     }
 
@@ -93,11 +153,33 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ),
                         const SizedBox(height: Dimens.large),
-                        CustomButton(
-                          title: "post",
-                          appFontSize: appFontSize,
-                          onTap: () {
-                            print("create post");
+                        BlocBuilder<UserBloc, UserState>(
+                          builder: (context, userState) {
+                            final ProfileStatus profileStatus =
+                                userState.profileStatus;
+
+                            if (profileStatus is ProfileSuccess) {
+                              final UserEntity profile = profileStatus.user;
+
+                              return CustomButton(
+                                title: "post",
+                                appFontSize: appFontSize,
+                                loading: _uploading,
+                                onTap: () {
+                                  _submitPost(user: profile);
+                                },
+                              );
+                            }
+
+                            if (profileStatus is ProfileLoading) {
+                              return CustomButton(
+                                title: "post",
+                                loading: true,
+                                appFontSize: appFontSize,
+                                onTap: () async {},
+                              );
+                            }
+                            return Container();
                           },
                         )
                       ],

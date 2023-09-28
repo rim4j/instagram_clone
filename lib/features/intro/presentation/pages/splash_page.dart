@@ -6,7 +6,7 @@ import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/check_connection_status.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/auth_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 import 'package:lottie/lottie.dart';
 
