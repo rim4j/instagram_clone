@@ -93,8 +93,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       await signOutUseCase();
       emit(state.copyWith(newAuthStatus: Unauthenticated()));
+      emit(state.copyWith(
+          newCredentialStatus:
+              CredentialFailed(message: "you has been signed out")));
     } catch (e) {
       emit(state.copyWith(newAuthStatus: Unauthenticated()));
+      emit(state.copyWith(
+          newCredentialStatus:
+              CredentialFailed(message: "you has been signed out")));
     }
   }
 
