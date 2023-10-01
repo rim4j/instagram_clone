@@ -3,13 +3,8 @@ part of 'post_bloc.dart';
 abstract class PostEvent extends Equatable {}
 
 class GetPostsEvent extends PostEvent {
-  final PostEntity post;
-
-  GetPostsEvent({
-    required this.post,
-  });
   @override
-  List<Object?> get props => [post];
+  List<Object?> get props => [];
 }
 
 class UpdatePostEvent extends PostEvent {

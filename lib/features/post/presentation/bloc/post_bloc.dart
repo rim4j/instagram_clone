@@ -51,7 +51,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     emit(state.copyWith(newPostsStatus: PostsLoading()));
 
     try {
-      final streamRes = readPostsUseCase(event.post);
+      final streamRes = readPostsUseCase();
 
       await emit.forEach(streamRes, onData: (dynamic data) {
         final List<PostEntity> posts = data;

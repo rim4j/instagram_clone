@@ -7,10 +7,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/strings.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
 import 'package:readmore/readmore.dart';
 
 class PostDetailsPage extends StatefulWidget {
-  const PostDetailsPage({super.key});
+  final PostEntity post;
+  const PostDetailsPage({
+    super.key,
+    required this.post,
+  });
 
   @override
   State<PostDetailsPage> createState() => _PostDetailsPageState();
@@ -34,18 +39,35 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
           children: [
             const SizedBox(width: Dimens.small),
             //avatar
-            Container(
+            SizedBox(
               width: size.width * 0.1,
               height: size.width * 0.1,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey,
+              child: CachedNetworkImage(
+                imageUrl: widget.post.userProfileUrl!,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) => SizedBox(
+                  width: size.width / 3,
+                  height: size.width / 3,
+                  child: SpinKitPulse(
+                    color: colorScheme.primary,
+                    size: 100,
+                  ),
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
             const SizedBox(width: Dimens.small),
             //name profile
             Text(
-              "david morel",
+              widget.post.username!,
               style: robotoMedium.copyWith(
                 fontSize: appFontSize.largeFontSize,
                 color: colorScheme.onSecondary,
@@ -67,8 +89,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                         width: size.width,
                         height: size.width,
                         child: CachedNetworkImage(
-                          imageUrl:
-                              "https://i0.wp.com/www.flutterbeads.com/wp-content/uploads/2022/01/add-image-in-flutter-hero.png",
+                          imageUrl: widget.post.postImageUrl!,
                           imageBuilder: (context, imageProvider) => Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -128,13 +149,18 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                           onTap: () {
                                             print("like");
                                           },
-                                          child: const Row(
+                                          child: Row(
                                             children: [
-                                              SizedBox(width: Dimens.medium),
-                                              Icon(FontAwesomeIcons.heart),
-                                              SizedBox(width: Dimens.small),
-                                              Text("5.2 k"),
-                                              SizedBox(width: Dimens.medium),
+                                              const SizedBox(
+                                                  width: Dimens.medium),
+                                              const Icon(
+                                                  FontAwesomeIcons.heart),
+                                              const SizedBox(
+                                                  width: Dimens.small),
+                                              Text(
+                                                  "${widget.post.likes!.length}"),
+                                              const SizedBox(
+                                                  width: Dimens.medium),
                                             ],
                                           ),
                                         ),
@@ -145,11 +171,11 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
 
                                     GestureDetector(
                                       onTap: () {},
-                                      child: const Row(
+                                      child: Row(
                                         children: [
-                                          Icon(FontAwesomeIcons.comment),
-                                          SizedBox(width: Dimens.small),
-                                          Text("140"),
+                                          const Icon(FontAwesomeIcons.comment),
+                                          const SizedBox(width: Dimens.small),
+                                          Text("${widget.post.totalComments}"),
                                         ],
                                       ),
                                     ),
@@ -188,11 +214,11 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 ),
                 //description
                 Padding(
-                  padding: EdgeInsets.all(Dimens.small),
+                  padding: const EdgeInsets.all(Dimens.small),
                   child: Align(
                     alignment: Alignment.bottomLeft,
                     child: ReadMoreText(
-                      Strings.lorem,
+                      widget.post.description!,
                       trimLines: 2,
                       colorClickableText: Colors.pink,
                       trimMode: TrimMode.Line,

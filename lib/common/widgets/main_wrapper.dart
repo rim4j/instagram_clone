@@ -2,14 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/common/bloc/bottom_nav.dart';
 import 'package:instagram_clone/common/widgets/bottom_nav.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
 import 'package:instagram_clone/features/post/presentation/pages/create_post_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/profile_page.dart';
 import 'package:instagram_clone/features/bookmark/presentation/pages/bookmark_page.dart';
 import 'package:instagram_clone/features/home/presentation/pages/home_page.dart';
 import 'package:instagram_clone/features/home/presentation/pages/search_page.dart';
 
-class MainWrapper extends StatelessWidget {
+class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
+
+  @override
+  State<MainWrapper> createState() => _MainWrapperState();
+}
+
+class _MainWrapperState extends State<MainWrapper> {
+  @override
+  void initState() {
+    BlocProvider.of<PostBloc>(context).add(GetPostsEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

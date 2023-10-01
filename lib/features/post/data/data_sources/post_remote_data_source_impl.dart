@@ -94,7 +94,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
   }
 
   @override
-  Stream<List<PostEntity>> readPosts(PostEntity post) {
+  Stream<List<PostEntity>> readPosts() {
     final postCollection = firebaseFirestore
         .collection(FirebaseConst.posts)
         .orderBy("createAt", descending: true);

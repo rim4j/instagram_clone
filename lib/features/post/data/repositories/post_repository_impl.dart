@@ -20,8 +20,7 @@ class PostRepositoryImpl implements PostRepository {
       postRemoteDataSource.likePost(post);
 
   @override
-  Stream<List<PostEntity>> readPosts(PostEntity post) =>
-      postRemoteDataSource.readPosts(post);
+  Stream<List<PostEntity>> readPosts() => postRemoteDataSource.readPosts();
 
   @override
   Future<void> updatePost(PostEntity post) async =>

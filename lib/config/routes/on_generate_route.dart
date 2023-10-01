@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone/common/widgets/main_wrapper.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
 import 'package:instagram_clone/features/user/presentation/pages/change_cover_image_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/change_profile_image_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/login_page.dart';
@@ -25,7 +26,11 @@ class OnGenerateRoute {
         return routeBuilder(const RegisterPage());
 
       case RouteNames.postDetailsPage:
-        return routeBuilder(const PostDetailsPage());
+        if (args is PostEntity) {
+          return routeBuilder(PostDetailsPage(post: args));
+        } else {
+          return routeBuilder(const NoPageFound());
+        }
 
       case RouteNames.editProfilePage:
         return routeBuilder(const EditProfilePage());

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +9,9 @@ import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/status/posts_status.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -52,16 +56,46 @@ class HomePage extends StatelessWidget {
         ),
       ),
       backgroundColor: colorScheme.background,
-      body: ListView.builder(
-        itemCount: 20,
-        itemBuilder: (context, index) {
-          return PostItem(
-            onTap: () =>
-                Navigator.pushNamed(context, RouteNames.postDetailsPage),
-            size: size,
-            appFontSize: appFontSize,
-            colorScheme: colorScheme,
-          );
+      body: BlocBuilder<PostBloc, PostState>(
+        builder: (context, postState) {
+          final postStatus = postState.postsStatus;
+
+          if (postStatus is PostsLoading) {
+            return const Center(
+              child: SpinKitRipple(
+                color: Colors.white,
+                size: 100,
+              ),
+            );
+          }
+          if (postStatus is PostsCompleted) {
+            final List<PostEntity> posts = postStatus.posts;
+
+            return ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final PostEntity post = posts[index];
+                return PostItem(
+                  post: post,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    RouteNames.postDetailsPage,
+                    arguments: post,
+                  ),
+                  size: size,
+                  appFontSize: appFontSize,
+                  colorScheme: colorScheme,
+                );
+              },
+            );
+          }
+          if (postStatus is PostsFailed) {
+            return const Center(
+              child: Text("something went wrong"),
+            );
+          }
+
+          return Container();
         },
       ),
     );
@@ -75,12 +109,14 @@ class PostItem extends StatelessWidget {
     required this.appFontSize,
     required this.colorScheme,
     required this.onTap,
+    required this.post,
   });
 
   final Size size;
   final AppFontSize appFontSize;
   final ColorScheme colorScheme;
   final VoidCallback onTap;
+  final PostEntity post;
 
   @override
   Widget build(BuildContext context) {
@@ -93,18 +129,37 @@ class PostItem extends StatelessWidget {
               children: [
                 const SizedBox(width: Dimens.small),
                 //avatar
-                Container(
-                  width: size.width * 0.1,
-                  height: size.width * 0.1,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey,
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: CachedNetworkImage(
+                    imageUrl: post.userProfileUrl!,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(50)),
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => SizedBox(
+                      width: size.width / 3,
+                      height: size.width / 3,
+                      child: SpinKitPulse(
+                        color: colorScheme.primary,
+                        size: 100,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 ),
                 const SizedBox(width: Dimens.small),
                 //name profile
                 Text(
-                  "david morel",
+                  post.username!,
                   style: robotoMedium.copyWith(
                     fontSize: appFontSize.mediumFontSize,
                   ),
@@ -128,8 +183,7 @@ class PostItem extends StatelessWidget {
                 width: size.width,
                 height: size.width,
                 child: CachedNetworkImage(
-                  imageUrl:
-                      "https://i0.wp.com/www.flutterbeads.com/wp-content/uploads/2022/01/add-image-in-flutter-hero.png",
+                  imageUrl: post.postImageUrl!,
                   imageBuilder: (context, imageProvider) => Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -187,13 +241,13 @@ class PostItem extends StatelessWidget {
                                   onTap: () {
                                     print("like");
                                   },
-                                  child: const Row(
+                                  child: Row(
                                     children: [
-                                      SizedBox(width: Dimens.medium),
-                                      Icon(FontAwesomeIcons.heart),
-                                      SizedBox(width: Dimens.small),
-                                      Text("5.2 k"),
-                                      SizedBox(width: Dimens.medium),
+                                      const SizedBox(width: Dimens.medium),
+                                      const Icon(FontAwesomeIcons.heart),
+                                      const SizedBox(width: Dimens.small),
+                                      Text("${post.likes!.length}"),
+                                      const SizedBox(width: Dimens.medium),
                                     ],
                                   ),
                                 ),
@@ -207,11 +261,11 @@ class PostItem extends StatelessWidget {
                                 Navigator.pushNamed(
                                     context, RouteNames.postDetailsPage);
                               },
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(FontAwesomeIcons.comment),
-                                  SizedBox(width: Dimens.small),
-                                  Text("140"),
+                                  const Icon(FontAwesomeIcons.comment),
+                                  const SizedBox(width: Dimens.small),
+                                  Text("${post.totalComments}"),
                                 ],
                               ),
                             ),

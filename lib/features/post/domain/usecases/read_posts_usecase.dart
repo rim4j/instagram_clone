@@ -7,7 +7,7 @@ class ReadPostsUseCase {
     required this.postRepository,
   });
 
-  Stream<List<PostEntity>> call(PostEntity post) {
-    return postRepository.readPosts(post);
+  Stream<List<PostEntity>> call() {
+    return postRepository.readPosts();
   }
 }
