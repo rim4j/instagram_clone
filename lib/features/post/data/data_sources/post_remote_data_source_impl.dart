@@ -114,6 +114,6 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
       postInfo['postImageUrl'] = post.postImageUrl;
     }
 
-    await postCollection.doc(post.postId).update(postInfo);
+    postCollection.doc(post.postId).update(postInfo);
   }
 }

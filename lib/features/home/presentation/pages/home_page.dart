@@ -21,6 +21,7 @@ class HomePage extends StatelessWidget {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorScheme.background,
@@ -75,16 +76,24 @@ class HomePage extends StatelessWidget {
               itemCount: posts.length,
               itemBuilder: (context, index) {
                 final PostEntity post = posts[index];
-                return PostItem(
-                  post: post,
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    RouteNames.postDetailsPage,
-                    arguments: post,
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    0,
+                    0,
+                    0,
+                    posts.length - 1 == index ? size.height / 10 : 0,
                   ),
-                  size: size,
-                  appFontSize: appFontSize,
-                  colorScheme: colorScheme,
+                  child: PostItem(
+                    post: post,
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      RouteNames.postDetailsPage,
+                      arguments: post,
+                    ),
+                    size: size,
+                    appFontSize: appFontSize,
+                    colorScheme: colorScheme,
+                  ),
                 );
               },
             );
@@ -166,10 +175,6 @@ class PostItem extends StatelessWidget {
                 ),
               ],
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(FontAwesomeIcons.ellipsisVertical),
-            )
           ],
         ),
         const SizedBox(height: Dimens.medium),

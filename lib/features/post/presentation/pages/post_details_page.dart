@@ -2,12 +2,19 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
-import 'package:instagram_clone/common/constants/strings.dart';
+import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
+import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
+import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
+import 'package:instagram_clone/locator.dart';
 import 'package:readmore/readmore.dart';
 
 class PostDetailsPage extends StatefulWidget {
@@ -22,6 +29,17 @@ class PostDetailsPage extends StatefulWidget {
 }
 
 class _PostDetailsPageState extends State<PostDetailsPage> {
+  @override
+  void initState() {
+    final uid = locator<GetCurrentUidUseCase>().call();
+
+    uid.then((uid) {
+      BlocProvider.of<UserBloc>(context).add(GetProfileEvent(uid: uid));
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -72,6 +90,59 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 fontSize: appFontSize.largeFontSize,
                 color: colorScheme.onSecondary,
               ),
+            ),
+            SizedBox(width: size.width / 3),
+            BlocBuilder<UserBloc, UserState>(
+              builder: (context, userState) {
+                final profileStatus = userState.profileStatus;
+                if (profileStatus is ProfileLoading) {
+                  return Container();
+                }
+
+                if (profileStatus is ProfileSuccess) {
+                  final UserEntity profile = profileStatus.user;
+
+                  if (profile.username == widget.post.username) {
+                    return PopupMenuButton(
+                      color: colorScheme.background,
+                      icon: Icon(
+                        FontAwesomeIcons.ellipsisVertical,
+                        color: colorScheme.onPrimary,
+                      ),
+                      onSelected: (value) {
+                        if (value == "/edit") {
+                          Navigator.of(context).pushNamed(
+                            RouteNames.editPostPage,
+                            arguments: widget.post,
+                          );
+                        }
+                        if (value == "/delete") {
+                          print(value);
+                        }
+                      },
+                      itemBuilder: (BuildContext bc) {
+                        return const [
+                          PopupMenuItem(
+                            value: '/edit',
+                            child: Text("Edit"),
+                          ),
+                          PopupMenuItem(
+                            value: '/delete',
+                            child: Text("Delete"),
+                          ),
+                        ];
+                      },
+                    );
+                  } else {
+                    return Container();
+                  }
+                }
+
+                if (profileStatus is ProfileFailed) {
+                  return Container();
+                }
+                return Container();
+              },
             ),
           ],
         ),

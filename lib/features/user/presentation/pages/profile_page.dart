@@ -127,6 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _key.currentState!.closeDrawer();
                 BlocProvider.of<UserBloc>(context).add(LoggedOutEvent());
                 BlocProvider.of<BottomNavCubit>(context).changeSelectedIndex(0);
+
                 Navigator.pushNamedAndRemoveUntil(
                     context, RouteNames.loginPage, (route) => false);
               },
@@ -144,7 +145,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
           if (profileStatus is ProfileSuccess) {
             final UserEntity profile = profileStatus.user;
-
             return SingleChildScrollView(
               child: Column(
                 children: [

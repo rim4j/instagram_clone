@@ -20,6 +20,7 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   void initState() {
     BlocProvider.of<PostBloc>(context).add(GetPostsEvent());
+
     super.initState();
   }
 
