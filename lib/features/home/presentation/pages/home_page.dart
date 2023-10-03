@@ -142,7 +142,9 @@ class PostItem extends StatelessWidget {
                   width: 50,
                   height: 50,
                   child: CachedNetworkImage(
-                    imageUrl: post.userProfileUrl!,
+                    imageUrl: post.userProfileUrl! == ""
+                        ? IMAGES.defaultProfile
+                        : post.userProfileUrl!,
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         borderRadius:

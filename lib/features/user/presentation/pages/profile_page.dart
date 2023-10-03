@@ -6,6 +6,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:instagram_clone/common/bloc/bottom_nav.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
+import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_colors.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
@@ -162,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         child: CachedNetworkImage(
                           imageUrl: profile.coverUrl == ""
-                              ? "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                              ? IMAGES.defaultCoverImage
                               : profile.coverUrl!,
                           imageBuilder: (context, imageProvider) => Container(
                             decoration: BoxDecoration(

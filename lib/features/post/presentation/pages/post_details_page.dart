@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
+import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
@@ -48,6 +49,52 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
     TextEditingController commentController = TextEditingController();
     bool isReply = false;
 
+    Future<void> _dialogBuilder(BuildContext context) {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: colorScheme.background,
+            title: Text(
+              'Delete',
+              style: robotoMedium,
+            ),
+            content: Text(
+              'Are you sure to delete the post?',
+              style: robotoRegular,
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'No',
+                  style: robotoRegular.copyWith(
+                    color: colorScheme.onPrimary,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                  'Yes',
+                  style: robotoRegular.copyWith(
+                    color: colorScheme.onPrimary,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  BlocProvider.of<PostBloc>(context).add(DeletePostEvent(
+                      post: PostEntity(postId: widget.post.postId)));
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Scaffold(
       backgroundColor: colorScheme.background,
       appBar: AppBar(
@@ -61,7 +108,9 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
               width: size.width * 0.1,
               height: size.width * 0.1,
               child: CachedNetworkImage(
-                imageUrl: widget.post.userProfileUrl!,
+                imageUrl: widget.post.userProfileUrl! == ""
+                    ? IMAGES.defaultProfile
+                    : widget.post.userProfileUrl!,
                 imageBuilder: (context, imageProvider) => Container(
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(50)),
@@ -91,7 +140,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 color: colorScheme.onSecondary,
               ),
             ),
-            SizedBox(width: size.width / 3),
+            SizedBox(width: size.width / 2.5),
             BlocBuilder<UserBloc, UserState>(
               builder: (context, userState) {
                 final profileStatus = userState.profileStatus;
@@ -117,7 +166,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                           );
                         }
                         if (value == "/delete") {
-                          print(value);
+                          _dialogBuilder(context);
                         }
                       },
                       itemBuilder: (BuildContext bc) {

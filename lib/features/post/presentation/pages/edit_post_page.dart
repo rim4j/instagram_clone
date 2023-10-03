@@ -14,7 +14,6 @@ import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
 import 'package:instagram_clone/features/storage/domain/usecase/upload_post_image_usecase.dart';
 import 'package:instagram_clone/locator.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 class EditPostPage extends StatefulWidget {
   final PostEntity post;
@@ -66,7 +65,7 @@ class _EditPostPageState extends State<EditPostPage> {
     });
   }
 
-  _createSubmitPost({required String image}) {
+  _updateSubmitPost({required String image}) {
     BlocProvider.of<PostBloc>(context).add(
       UpdatePostEvent(
         post: PostEntity(
@@ -79,7 +78,8 @@ class _EditPostPageState extends State<EditPostPage> {
     setState(() {
       _uploading = false;
     });
-    Navigator.pushReplacementNamed(context, RouteNames.mainWrapper);
+    Navigator.pushNamedAndRemoveUntil(
+        context, RouteNames.mainWrapper, (route) => false);
 
     CustomSnackBars.showSnackSuccess(
         context, "post has been updated successfully");
@@ -101,7 +101,8 @@ class _EditPostPageState extends State<EditPostPage> {
       setState(() {
         _uploading = false;
       });
-      Navigator.pushReplacementNamed(context, RouteNames.mainWrapper);
+      Navigator.pushNamedAndRemoveUntil(
+          context, RouteNames.mainWrapper, (route) => false);
 
       CustomSnackBars.showSnackSuccess(
           context, "post has been updated successfully");
@@ -109,7 +110,7 @@ class _EditPostPageState extends State<EditPostPage> {
       locator<UploadPostImageUseCase>()
           .call(params: selectedImage)
           .then((value) {
-        _createSubmitPost(image: value);
+        _updateSubmitPost(image: value);
       });
     }
   }
