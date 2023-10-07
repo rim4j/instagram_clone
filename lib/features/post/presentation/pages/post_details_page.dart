@@ -100,6 +100,9 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
       appBar: AppBar(
         backgroundColor: colorScheme.background,
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: colorScheme.onPrimary,
+        ),
         title: Row(
           children: [
             const SizedBox(width: Dimens.small),
@@ -140,7 +143,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 color: colorScheme.onSecondary,
               ),
             ),
-            SizedBox(width: size.width / 2.5),
+            SizedBox(width: size.width / 3),
             BlocBuilder<UserBloc, UserState>(
               builder: (context, userState) {
                 final profileStatus = userState.profileStatus;

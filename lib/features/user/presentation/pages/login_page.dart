@@ -202,9 +202,13 @@ class _LoginPageState extends State<LoginPage> {
                           final credentialStatus = userState.credentialStatus;
 
                           if (credentialStatus is CredentialSuccess) {
-                            CredentialSuccess success = credentialStatus;
-                            CustomSnackBars.showSnackSuccess(
-                                context, success.message);
+                            // CredentialSuccess success = credentialStatus;
+                            // CustomSnackBars.showSnackSuccess(
+                            //     context, success.message);
+
+                            //if credential is successful then authentication is successful for uid
+                            BlocProvider.of<UserBloc>(context)
+                                .add(AppStartedEvent());
 
                             Navigator.pushNamedAndRemoveUntil(context,
                                 RouteNames.mainWrapper, (route) => false);

@@ -31,6 +31,7 @@ class CredentialFailed extends CredentialStatus {
   CredentialFailed({
     required this.message,
   });
+
   @override
   List<Object?> get props => [message];
 }
