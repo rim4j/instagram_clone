@@ -25,4 +25,8 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<void> updatePost(PostEntity post) async =>
       postRemoteDataSource.updatePost(post);
+
+  @override
+  Stream<List<PostEntity>> readSinglePost(String postId) =>
+      postRemoteDataSource.readSinglePost(postId);
 }

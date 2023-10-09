@@ -6,6 +6,7 @@ class PostState extends Equatable {
   final UpdatePostStatus updatePostStatus;
   final LikePostStatus likePostStatus;
   final DeletePostStatus deletePostStatus;
+  final SinglePostStatus singlePostStatus;
 
   const PostState({
     required this.postsStatus,
@@ -13,6 +14,7 @@ class PostState extends Equatable {
     required this.updatePostStatus,
     required this.likePostStatus,
     required this.deletePostStatus,
+    required this.singlePostStatus,
   });
 
   PostState copyWith({
@@ -21,6 +23,7 @@ class PostState extends Equatable {
     UpdatePostStatus? newUpdatePostStatus,
     LikePostStatus? newLikePostStatus,
     DeletePostStatus? newDeletePostStatus,
+    SinglePostStatus? newSinglePostStatus,
   }) {
     return PostState(
       postsStatus: newPostsStatus ?? postsStatus,
@@ -28,9 +31,17 @@ class PostState extends Equatable {
       updatePostStatus: newUpdatePostStatus ?? updatePostStatus,
       likePostStatus: newLikePostStatus ?? likePostStatus,
       deletePostStatus: newDeletePostStatus ?? deletePostStatus,
+      singlePostStatus: newSinglePostStatus ?? singlePostStatus,
     );
   }
 
   @override
-  List<Object?> get props => [postsStatus];
+  List<Object?> get props => [
+        postsStatus,
+        createPostStatus,
+        updatePostStatus,
+        likePostStatus,
+        deletePostStatus,
+        singlePostStatus,
+      ];
 }

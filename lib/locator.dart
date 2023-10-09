@@ -18,6 +18,7 @@ import 'package:instagram_clone/features/post/domain/usecases/create_post_usecas
 import 'package:instagram_clone/features/post/domain/usecases/delete_post_usecase.dart';
 import 'package:instagram_clone/features/post/domain/usecases/like_post_usecase.dart';
 import 'package:instagram_clone/features/post/domain/usecases/read_posts_usecase.dart';
+import 'package:instagram_clone/features/post/domain/usecases/read_single_post_usecase.dart';
 import 'package:instagram_clone/features/post/domain/usecases/update_post_usecase.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
 import 'package:instagram_clone/features/storage/data/data_source/storage_remote_data_source.dart';
@@ -195,6 +196,9 @@ void setup() {
   locator.registerSingleton<UpdatePostUseCase>(
       UpdatePostUseCase(postRepository: locator()));
 
+  locator.registerSingleton<ReadSinglePostUseCase>(
+      ReadSinglePostUseCase(postRepository: locator()));
+
   //bloc
   locator.registerSingleton<PostBloc>(
     PostBloc(
@@ -203,6 +207,7 @@ void setup() {
       createPostUseCase: locator(),
       likePostUseCase: locator(),
       deletePostUseCase: locator(),
+      readSinglePostUseCase: locator(),
     ),
   );
 }

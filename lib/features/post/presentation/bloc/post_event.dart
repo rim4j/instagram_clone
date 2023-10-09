@@ -46,3 +46,13 @@ class CreatePostEvent extends PostEvent {
   @override
   List<Object?> get props => [post];
 }
+
+class GetSinglePostEvent extends PostEvent {
+  final String postId;
+
+  GetSinglePostEvent({
+    required this.postId,
+  });
+  @override
+  List<Object?> get props => [postId];
+}

@@ -20,58 +20,49 @@ class LikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Container(
-        height: 60,
-        decoration: BoxDecoration(
-          color: colorScheme.background,
-          borderRadius: BorderRadius.circular(Dimens.large),
-        ),
-        child: GestureDetector(
-          onTap: () {
-            BlocProvider.of<PostBloc>(context)
-                .add(LikePostEvent(post: PostEntity(postId: post.postId)));
-          },
-          child: Row(
-            children: [
-              const SizedBox(width: Dimens.medium),
-              BlocBuilder<UserBloc, UserState>(
-                builder: (context, userState) {
-                  final auth = userState.authStatus as Authenticated;
-
-                  if (post.likes!.contains(auth.uid)) {
-                    return BouncingWidget(
-                      onPressed: () {
-                        BlocProvider.of<PostBloc>(context).add(LikePostEvent(
-                            post: PostEntity(postId: post.postId)));
-                      },
-                      duration: const Duration(milliseconds: 100),
-                      scaleFactor: 3,
-                      child: const Icon(
-                        CupertinoIcons.heart_fill,
-                        color: Colors.red,
-                      ),
-                    );
-                  }
-
-                  return BouncingWidget(
-                    duration: const Duration(milliseconds: 100),
-                    scaleFactor: 3,
-                    onPressed: () {
-                      BlocProvider.of<PostBloc>(context).add(
-                          LikePostEvent(post: PostEntity(postId: post.postId)));
-                    },
-                    child: const Icon(
-                      CupertinoIcons.heart,
-                    ),
-                  );
-                },
+    return GestureDetector(
+      onTap: () {
+        context.read<PostBloc>().add(
+              LikePostEvent(
+                post: PostEntity(postId: post.postId),
               ),
-              const SizedBox(width: Dimens.small),
-              Text("${post.likes!.length}"),
-              const SizedBox(width: Dimens.medium),
-            ],
+            );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Container(
+          height: 60,
+          decoration: BoxDecoration(
+            color: colorScheme.background,
+            borderRadius: BorderRadius.circular(Dimens.large),
+          ),
+          child: GestureDetector(
+            onTap: () {
+              BlocProvider.of<PostBloc>(context)
+                  .add(LikePostEvent(post: PostEntity(postId: post.postId)));
+            },
+            child: Row(
+              children: [
+                const SizedBox(width: Dimens.medium),
+                BlocBuilder<UserBloc, UserState>(
+                  builder: (context, userState) {
+                    final auth = userState.authStatus as Authenticated;
+
+                    final bool isLiked = post.likes!.contains(auth.uid);
+
+                    return Icon(
+                      isLiked
+                          ? CupertinoIcons.heart_fill
+                          : CupertinoIcons.heart,
+                      color: isLiked ? Colors.red : Colors.white,
+                    );
+                  },
+                ),
+                const SizedBox(width: Dimens.small),
+                Text("${post.likes!.length}"),
+                const SizedBox(width: Dimens.medium),
+              ],
+            ),
           ),
         ),
       ),

@@ -119,7 +119,8 @@ class PostItem extends StatelessWidget {
               left: Dimens.medium,
               right: Dimens.medium,
               bottom: Dimens.medium,
-              child: ClipRect(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(Dimens.xxLarge),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                   child: Container(

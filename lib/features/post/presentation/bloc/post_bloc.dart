@@ -7,11 +7,13 @@ import 'package:instagram_clone/features/post/domain/usecases/create_post_usecas
 import 'package:instagram_clone/features/post/domain/usecases/delete_post_usecase.dart';
 import 'package:instagram_clone/features/post/domain/usecases/like_post_usecase.dart';
 import 'package:instagram_clone/features/post/domain/usecases/read_posts_usecase.dart';
+import 'package:instagram_clone/features/post/domain/usecases/read_single_post_usecase.dart';
 import 'package:instagram_clone/features/post/domain/usecases/update_post_usecase.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/status/create_post_status.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/status/delete_post_status.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/status/like_post_status.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/status/posts_status.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/status/single_post_status.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/status/update_post_status.dart';
 
 part 'post_event.dart';
@@ -23,6 +25,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   final CreatePostUseCase createPostUseCase;
   final LikePostUseCase likePostUseCase;
   final DeletePostUseCase deletePostUseCase;
+  final ReadSinglePostUseCase readSinglePostUseCase;
 
   PostBloc({
     required this.readPostsUseCase,
@@ -30,14 +33,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required this.createPostUseCase,
     required this.likePostUseCase,
     required this.deletePostUseCase,
+    required this.readSinglePostUseCase,
   }) : super(PostState(
           postsStatus: PostsInitial(),
           createPostStatus: CreatePostInitial(),
           deletePostStatus: DeletePostInit(),
           likePostStatus: LikePostInit(),
           updatePostStatus: UpdatePostInit(),
+          singlePostStatus: SinglePostInitial(),
         )) {
     on<GetPostsEvent>(_onGetPostsEvent);
+    on<GetSinglePostEvent>(_onGetSinglePostEvent);
     on<UpdatePostEvent>(_onUpdatePostEvent);
     on<DeletePostEvent>(_onDeletePostEvent);
     on<LikePostEvent>(_onLikePostEvent);
@@ -60,6 +66,27 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       });
     } catch (e) {
       emit(state.copyWith(newPostsStatus: PostsFailed(message: e.toString())));
+    }
+  }
+
+  void _onGetSinglePostEvent(
+    GetSinglePostEvent event,
+    Emitter<PostState> emit,
+  ) async {
+    emit(state.copyWith(newSinglePostStatus: SinglePostLoading()));
+
+    try {
+      final streamRes = readSinglePostUseCase(event.postId);
+
+      await emit.forEach(streamRes, onData: (dynamic data) {
+        final List<PostEntity> posts = data;
+        final PostEntity singlePost = posts.first;
+
+        return state.copyWith(
+            newSinglePostStatus: SinglePostCompleted(post: singlePost));
+      });
+    } catch (e) {
+      emit(state.copyWith(newSinglePostStatus: SinglePostFailed()));
     }
   }
 
