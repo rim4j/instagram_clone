@@ -58,7 +58,6 @@ dependencies:
   firebase_core: ^2.15.1
   top_snackbar_flutter: ^3.1.0
   uuid: ^4.1.0
-  bouncing_widget: ^2.0.0
 
 dev_dependencies:
   flutter_test:
