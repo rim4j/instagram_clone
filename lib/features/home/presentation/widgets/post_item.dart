@@ -144,7 +144,8 @@ class PostItem extends StatelessWidget {
                             GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(
-                                    context, RouteNames.postDetailsPage);
+                                    context, RouteNames.postDetailsPage,
+                                    arguments: post);
                               },
                               child: Row(
                                 children: [

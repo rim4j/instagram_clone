@@ -2,6 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:instagram_clone/features/comment/data/data_sources/comment_remote_data_source.dart';
+import 'package:instagram_clone/features/comment/data/data_sources/comment_remote_data_source_impl.dart';
+import 'package:instagram_clone/features/comment/data/repositories/comment_repository_impl.dart';
+import 'package:instagram_clone/features/comment/domain/repositories/comment_repository.dart';
+import 'package:instagram_clone/features/comment/domain/usecases/create_comment_usecase.dart';
+import 'package:instagram_clone/features/comment/domain/usecases/delete_comment_usecase.dart';
+import 'package:instagram_clone/features/comment/domain/usecases/like_comment_usecase.dart';
+import 'package:instagram_clone/features/comment/domain/usecases/read_comment_usecase.dart';
+import 'package:instagram_clone/features/comment/domain/usecases/update_comment_usecase.dart';
+import 'package:instagram_clone/features/comment/presentation/bloc/comment_bloc.dart';
 import 'package:instagram_clone/features/intro/data/data_source/local/intro_local_data_source.dart';
 import 'package:instagram_clone/features/intro/data/data_source/local/intro_local_data_source_impl.dart';
 import 'package:instagram_clone/features/intro/data/repository/intro_repository_impl.dart';
@@ -213,4 +223,43 @@ void setup() {
 
   // <--------------->
   //!comment feature
+
+  //data source
+
+  locator
+      .registerSingleton<CommentRemoteDataSource>(CommentRemoteDataSourceImpl(
+    firebaseFirestore: locator(),
+    firebaseAuth: locator(),
+  ));
+
+  //repository
+
+  locator.registerSingleton<CommentRepository>(
+      CommentRepositoryImpl(commentRemoteDataSource: locator()));
+
+  //use case
+  locator.registerSingleton<CreateCommentUseCase>(
+      CreateCommentUseCase(commentRepository: locator()));
+
+  locator.registerSingleton<DeleteCommentUseCase>(
+      DeleteCommentUseCase(commentRepository: locator()));
+
+  locator.registerSingleton<ReadCommentUseCase>(
+      ReadCommentUseCase(commentRepository: locator()));
+
+  locator.registerSingleton<UpdateCommentUseCase>(
+      UpdateCommentUseCase(commentRepository: locator()));
+
+  locator.registerSingleton<LikeCommentUseCase>(
+      LikeCommentUseCase(commentRepository: locator()));
+
+  //bloc
+
+  locator.registerSingleton<CommentBloc>(CommentBloc(
+    createCommentUseCase: locator(),
+    deleteCommentUseCase: locator(),
+    likeCommentUseCase: locator(),
+    readCommentUseCase: locator(),
+    updateCommentUseCase: locator(),
+  ));
 }

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -9,19 +10,25 @@ import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/comment/domain/entities/comment_entity.dart';
+import 'package:instagram_clone/features/comment/presentation/bloc/comment_bloc.dart';
+import 'package:instagram_clone/features/comment/presentation/bloc/status/read_comment_status.dart';
 import 'package:instagram_clone/features/home/presentation/widgets/like_button.dart';
 import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/status/single_post_status.dart';
+import 'package:instagram_clone/features/post/presentation/widgets/comment_item.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 import 'package:instagram_clone/locator.dart';
 import 'package:readmore/readmore.dart';
+import 'package:uuid/uuid.dart';
 
 class PostDetailsPage extends StatefulWidget {
   final PostEntity post;
+
   const PostDetailsPage({
     super.key,
     required this.post,
@@ -32,6 +39,14 @@ class PostDetailsPage extends StatefulWidget {
 }
 
 class _PostDetailsPageState extends State<PostDetailsPage> {
+  final TextEditingController commentController = TextEditingController();
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     final uid = locator<GetCurrentUidUseCase>().call();
@@ -43,6 +58,9 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
     BlocProvider.of<PostBloc>(context)
         .add(GetSinglePostEvent(postId: widget.post.postId!));
 
+    BlocProvider.of<CommentBloc>(context)
+        .add(ReadCommentEvent(postId: widget.post.postId!));
+
     super.initState();
   }
 
@@ -51,7 +69,6 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
-    TextEditingController commentController = TextEditingController();
     bool isReply = false;
 
     Future<void> _dialogBuilder(BuildContext context) {
@@ -303,6 +320,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                               ],
                                             ),
                                           ),
+
                                           const SizedBox(width: Dimens.medium),
                                           //share
                                           GestureDetector(
@@ -364,149 +382,148 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
 
                       // comments
 
-                      ListView.builder(
-                        shrinkWrap: true,
-                        primary: false,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.fromLTRB(
-                              Dimens.medium,
-                              Dimens.medium,
-                              Dimens.medium,
-                              //check for last index on comment list
-                              //commentList.length-1
-                              index == 9 ? size.height / 10 : Dimens.small,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    const SizedBox(width: Dimens.small),
-                                    //avatar
-                                    Container(
-                                      width: size.width * 0.1,
-                                      height: size.width * 0.1,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    const SizedBox(width: Dimens.small),
-                                    //name profile
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "david morel",
-                                          style: robotoMedium.copyWith(
-                                            fontSize:
-                                                appFontSize.mediumFontSize,
-                                            color: colorScheme.onSecondary,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          "this is comment",
-                                          style: robotoMedium.copyWith(
-                                            fontSize: appFontSize.smallFontSize,
-                                            color: colorScheme.onSecondary,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "31/jul/2022",
-                                              style: robotoMedium.copyWith(
-                                                fontSize: appFontSize
-                                                    .verySmallFontSize,
-                                                color: colorScheme.onSecondary,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  isReply = !isReply;
-                                                });
-                                              },
-                                              child: Text(
-                                                "Replay",
-                                                style: robotoMedium.copyWith(
-                                                  fontSize: appFontSize
-                                                      .verySmallFontSize,
-                                                  color:
-                                                      colorScheme.onSecondary,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              "View Replays",
-                                              style: robotoMedium.copyWith(
-                                                fontSize: appFontSize
-                                                    .verySmallFontSize,
-                                                color: colorScheme.onSecondary,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: Dimens.small),
-                                  child: Icon(FontAwesomeIcons.heart),
-                                )
-                              ],
-                            ),
-                          );
+                      BlocBuilder<CommentBloc, CommentState>(
+                        builder: (context, commentState) {
+                          final readCommentsStatus =
+                              commentState.readCommentStatus;
+
+                          if (readCommentsStatus is ReadCommentLoading) {
+                            return SpinKitPulse(
+                              color: colorScheme.primary,
+                              size: 100,
+                            );
+                          }
+
+                          if (readCommentsStatus is ReadCommentSuccess) {
+                            final List<CommentEntity> comments =
+                                readCommentsStatus.comments;
+
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              primary: false,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: comments.length,
+                              itemBuilder: (context, index) {
+                                final CommentEntity comment = comments[index];
+
+                                return CommentItem(
+                                  comment: comment,
+                                  size: size,
+                                  index: index,
+                                  appFontSize: appFontSize,
+                                  colorScheme: colorScheme,
+                                  length: comments.length,
+                                );
+                              },
+                            );
+                          }
+
+                          if (readCommentsStatus is ReadCommentFailed) {
+                            return const Center(
+                              child: Text("something went wrong"),
+                            );
+                          }
+
+                          return Container();
                         },
                       ),
                     ],
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    height: 80,
-                    color: colorScheme.background,
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: Dimens.large),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: size.width * 0.1,
-                            height: size.width * 0.1,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey,
+                BlocBuilder<UserBloc, UserState>(
+                  builder: (context, userState) {
+                    final user = userState.profileStatus;
+
+                    if (user is ProfileSuccess) {
+                      final profile = user.user;
+
+                      return Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 80,
+                          color: colorScheme.background,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: Dimens.large),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: size.width / 10,
+                                  height: size.width / 10,
+                                  child: CachedNetworkImage(
+                                    imageUrl: profile.profileUrl!,
+                                    imageBuilder: (context, imageProvider) =>
+                                        ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    placeholder: (context, url) => SizedBox(
+                                      width: size.width / 3,
+                                      height: size.width / 3,
+                                      child: SpinKitPulse(
+                                        color: colorScheme.primary,
+                                        size: 100,
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: size.width / 1.8,
+                                  child: TextField(
+                                    controller: commentController,
+                                    style: robotoRegular,
+                                    decoration: InputDecoration(
+                                      hintText: "comment",
+                                      hintStyle: robotoRegular,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    BlocProvider.of<CommentBloc>(context).add(
+                                      CreateCommentEvent(
+                                        comment: CommentEntity(
+                                          totalReplays: 0,
+                                          commentId: const Uuid().v1(),
+                                          createAt: Timestamp.now(),
+                                          likes: const [],
+                                          username: profile.username,
+                                          userProfileUrl: profile.profileUrl,
+                                          description: commentController.text,
+                                          creatorUid: profile.uid,
+                                          postId: widget.post.postId,
+                                        ),
+                                      ),
+                                    );
+
+                                    commentController.clear();
+                                  },
+                                  child: Text(
+                                    "Post",
+                                    style: robotoMedium.copyWith(
+                                      color: colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(
-                            width: size.width / 1.8,
-                            child: TextField(
-                              controller: commentController,
-                              style: robotoRegular,
-                              decoration: InputDecoration(
-                                hintText: "comment",
-                                hintStyle: robotoRegular,
-                              ),
-                            ),
-                          ),
-                          const Text("Post"),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
+                      );
+                    }
+
+                    return Container();
+                  },
                 )
               ],
             ),
