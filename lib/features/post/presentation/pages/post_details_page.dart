@@ -20,6 +20,7 @@ import 'package:instagram_clone/features/post/presentation/bloc/status/single_po
 import 'package:instagram_clone/features/post/presentation/widgets/comment_item.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 import 'package:instagram_clone/locator.dart';
@@ -108,6 +109,52 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                   Navigator.of(context).pop();
                   BlocProvider.of<PostBloc>(context).add(DeletePostEvent(
                       post: PostEntity(postId: widget.post.postId)));
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _deleteDialogComment(
+        BuildContext context, CommentEntity comment) {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: colorScheme.background,
+            title: Text(
+              'Delete',
+              style: robotoMedium,
+            ),
+            content: Text(
+              'Are you sure to delete the comment?',
+              style: robotoRegular,
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'No',
+                  style: robotoRegular.copyWith(
+                    color: colorScheme.onPrimary,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                  'Yes',
+                  style: robotoRegular.copyWith(
+                    color: colorScheme.onPrimary,
+                  ),
+                ),
+                onPressed: () {
+                  BlocProvider.of<CommentBloc>(context)
+                      .add(DeleteCommentEvent(comment: comment));
                   Navigator.pop(context);
                 },
               ),
@@ -406,13 +453,34 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                               itemBuilder: (context, index) {
                                 final CommentEntity comment = comments[index];
 
-                                return CommentItem(
-                                  comment: comment,
-                                  size: size,
-                                  index: index,
-                                  appFontSize: appFontSize,
-                                  colorScheme: colorScheme,
-                                  length: comments.length,
+                                return BlocBuilder<UserBloc, UserState>(
+                                  builder: (context, userState) {
+                                    final user = userState.authStatus;
+
+                                    if (user is Authenticated) {
+                                      final uid = user.uid;
+                                      return CommentItem(
+                                        onLongPress: () {
+                                          if (uid == comment.creatorUid) {
+                                            _deleteDialogComment(
+                                                context,
+                                                CommentEntity(
+                                                  commentId: comment.commentId,
+                                                  postId: comment.postId,
+                                                ));
+                                          }
+                                          return;
+                                        },
+                                        comment: comment,
+                                        size: size,
+                                        index: index,
+                                        appFontSize: appFontSize,
+                                        colorScheme: colorScheme,
+                                        length: comments.length,
+                                      );
+                                    }
+                                    return Container();
+                                  },
                                 );
                               },
                             );
@@ -452,7 +520,9 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                   width: size.width / 10,
                                   height: size.width / 10,
                                   child: CachedNetworkImage(
-                                    imageUrl: profile.profileUrl!,
+                                    imageUrl: profile.profileUrl! == ""
+                                        ? IMAGES.defaultProfile
+                                        : profile.profileUrl!,
                                     imageBuilder: (context, imageProvider) =>
                                         ClipRRect(
                                       borderRadius: BorderRadius.circular(100),

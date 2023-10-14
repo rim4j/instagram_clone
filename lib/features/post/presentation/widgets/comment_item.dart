@@ -16,6 +16,7 @@ class CommentItem extends StatelessWidget {
   final ColorScheme colorScheme;
   final CommentEntity comment;
   final num length;
+  final VoidCallback onLongPress;
 
   const CommentItem({
     Key? key,
@@ -25,118 +26,127 @@ class CommentItem extends StatelessWidget {
     required this.colorScheme,
     required this.comment,
     required this.length,
+    required this.onLongPress,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Dimens.medium,
-        Dimens.medium,
-        Dimens.medium,
-        //check for last index on comment list
-        //commentList.length-1
-        index == length - 1 ? size.height / 10 : Dimens.small,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+    return InkWell(
+      onLongPress: onLongPress,
+      child: SizedBox(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            Dimens.medium,
+            Dimens.medium,
+            Dimens.medium,
+            //check for last index on comment list
+            //commentList.length-1
+            index == length - 1 ? size.height / 10 : Dimens.small,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(width: Dimens.small),
-              //avatar
-              //avatar
-              SizedBox(
-                width: size.width * 0.1,
-                height: size.width * 0.1,
-                child: CachedNetworkImage(
-                  imageUrl: comment.userProfileUrl! == ""
-                      ? IMAGES.defaultProfile
-                      : comment.userProfileUrl!,
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(50)),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  placeholder: (context, url) => SizedBox(
-                    width: size.width / 3,
-                    height: size.width / 3,
-                    child: SpinKitPulse(
-                      color: colorScheme.primary,
-                      size: 100,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
-              ),
-              const SizedBox(width: Dimens.small),
-              //name profile
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  Text(
-                    comment.username!,
-                    style: robotoMedium.copyWith(
-                      fontSize: appFontSize.mediumFontSize,
-                      color: colorScheme.onSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    comment.description!,
-                    style: robotoMedium.copyWith(
-                      fontSize: appFontSize.smallFontSize,
-                      color: colorScheme.onSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text(
-                        DateFormat.yMEd().format(comment.createAt!.toDate()),
-                        style: robotoMedium.copyWith(
-                          fontSize: appFontSize.verySmallFontSize,
-                          color: colorScheme.onSecondary,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      GestureDetector(
-                        onTap: () {
-                          // setState(() {
-                          //   isReply = !isReply;
-                          // });
-                        },
-                        child: Text(
-                          "Replay",
-                          style: robotoMedium.copyWith(
-                            fontSize: appFontSize.verySmallFontSize,
-                            color: colorScheme.onSecondary,
+                  const SizedBox(width: Dimens.small),
+                  //avatar
+                  SizedBox(
+                    width: size.width * 0.1,
+                    height: size.width * 0.1,
+                    child: CachedNetworkImage(
+                      imageUrl: comment.userProfileUrl! == ""
+                          ? IMAGES.defaultProfile
+                          : comment.userProfileUrl!,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50)),
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 5),
+                      placeholder: (context, url) => SizedBox(
+                        width: size.width / 3,
+                        height: size.width / 3,
+                        child: SpinKitPulse(
+                          color: colorScheme.primary,
+                          size: 100,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+                  ),
+                  const SizedBox(width: Dimens.small),
+                  //name profile
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        "View Replays",
+                        comment.username!,
                         style: robotoMedium.copyWith(
-                          fontSize: appFontSize.verySmallFontSize,
+                          fontSize: appFontSize.mediumFontSize,
                           color: colorScheme.onSecondary,
                         ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        comment.description!,
+                        style: robotoMedium.copyWith(
+                          fontSize: appFontSize.smallFontSize,
+                          color: colorScheme.onSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text(
+                            DateFormat.yMEd()
+                                .format(comment.createAt!.toDate()),
+                            style: robotoMedium.copyWith(
+                              fontSize: appFontSize.verySmallFontSize,
+                              color: colorScheme.onSecondary,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          GestureDetector(
+                            onTap: () {
+                              print("reply");
+                              // setState(() {
+                              //   isReply = !isReply;
+                              // });
+                            },
+                            child: Text(
+                              "Replay",
+                              style: robotoMedium.copyWith(
+                                fontSize: appFontSize.verySmallFontSize,
+                                color: colorScheme.onSecondary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            "View Replays",
+                            style: robotoMedium.copyWith(
+                              fontSize: appFontSize.verySmallFontSize,
+                              color: colorScheme.onSecondary,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ],
               ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimens.small),
+                child: Icon(FontAwesomeIcons.heart),
+              )
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: Dimens.small),
-            child: Icon(FontAwesomeIcons.heart),
-          )
-        ],
+        ),
       ),
     );
   }
