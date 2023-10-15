@@ -471,6 +471,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                           }
                                           return;
                                         },
+                                        uid: uid,
                                         comment: comment,
                                         size: size,
                                         index: index,

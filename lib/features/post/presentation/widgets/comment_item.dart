@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/comment/domain/entities/comment_entity.dart';
+import 'package:instagram_clone/features/comment/presentation/bloc/comment_bloc.dart';
 import 'package:intl/intl.dart';
 
 class CommentItem extends StatelessWidget {
@@ -17,6 +19,7 @@ class CommentItem extends StatelessWidget {
   final CommentEntity comment;
   final num length;
   final VoidCallback onLongPress;
+  final String uid;
 
   const CommentItem({
     Key? key,
@@ -27,10 +30,21 @@ class CommentItem extends StatelessWidget {
     required this.comment,
     required this.length,
     required this.onLongPress,
+    required this.uid,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String _profilePicture() {
+      if (comment.userProfileUrl == "") {
+        return IMAGES.defaultProfile;
+      } else {
+        return comment.userProfileUrl!;
+      }
+    }
+
+    bool isLiked = comment.likes!.contains(uid);
+
     return InkWell(
       onLongPress: onLongPress,
       child: SizedBox(
@@ -54,9 +68,7 @@ class CommentItem extends StatelessWidget {
                     width: size.width * 0.1,
                     height: size.width * 0.1,
                     child: CachedNetworkImage(
-                      imageUrl: comment.userProfileUrl! == ""
-                          ? IMAGES.defaultProfile
-                          : comment.userProfileUrl!,
+                      imageUrl: _profilePicture(),
                       imageBuilder: (context, imageProvider) => Container(
                         decoration: BoxDecoration(
                           borderRadius:
@@ -103,7 +115,7 @@ class CommentItem extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            DateFormat.yMEd()
+                            DateFormat("dd/MMM/yyy")
                                 .format(comment.createAt!.toDate()),
                             style: robotoMedium.copyWith(
                               fontSize: appFontSize.verySmallFontSize,
@@ -140,9 +152,18 @@ class CommentItem extends StatelessWidget {
                   ),
                 ],
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimens.small),
-                child: Icon(FontAwesomeIcons.heart),
+              GestureDetector(
+                onTap: () {
+                  BlocProvider.of<CommentBloc>(context)
+                      .add(LikeCommentEvent(comment: comment));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Dimens.small),
+                  child: Icon(
+                    isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                    color: isLiked ? Colors.red : Colors.white,
+                  ),
+                ),
               )
             ],
           ),

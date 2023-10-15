@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
+import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/common/widgets/custom_button.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
@@ -61,7 +62,9 @@ class _ChangeProfileImagePageState extends State<ChangeProfileImagePage> {
                 height: size.width,
                 child: selectedImage == null
                     ? CachedNetworkImage(
-                        imageUrl: widget.profileUrl,
+                        imageUrl: widget.profileUrl == ""
+                            ? IMAGES.defaultProfile
+                            : widget.profileUrl,
                         imageBuilder: (context, imageProvider) => ClipRRect(
                           borderRadius: BorderRadius.circular(Dimens.large),
                           child: Container(

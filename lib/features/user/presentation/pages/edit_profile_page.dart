@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
+import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/common/widgets/custom_button.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_colors.dart';
@@ -157,10 +158,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       width: 5, color: colorScheme.background),
                                 ),
                                 child: CachedNetworkImage(
-                                  imageUrl: profileSuccess.user.profileUrl! ==
-                                          ""
-                                      ? "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-                                      : profileSuccess.user.profileUrl!,
+                                  imageUrl:
+                                      profileSuccess.user.profileUrl! == ""
+                                          ? IMAGES.defaultProfile
+                                          : profileSuccess.user.profileUrl!,
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
                                     decoration: BoxDecoration(
