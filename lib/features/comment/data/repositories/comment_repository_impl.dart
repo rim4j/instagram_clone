@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:instagram_clone/features/comment/data/data_sources/comment_remote_data_source.dart';
 import 'package:instagram_clone/features/comment/domain/entities/comment_entity.dart';
 import 'package:instagram_clone/features/comment/domain/repositories/comment_repository.dart';
