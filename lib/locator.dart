@@ -31,6 +31,16 @@ import 'package:instagram_clone/features/post/domain/usecases/read_posts_usecase
 import 'package:instagram_clone/features/post/domain/usecases/read_single_post_usecase.dart';
 import 'package:instagram_clone/features/post/domain/usecases/update_post_usecase.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
+import 'package:instagram_clone/features/replay/data/data_sources/replay_remote_data_source.dart';
+import 'package:instagram_clone/features/replay/data/data_sources/replay_remote_data_source_impl.dart';
+import 'package:instagram_clone/features/replay/data/repositories/replay_repository_impl.dart';
+import 'package:instagram_clone/features/replay/domain/repositories/replay_repositroy.dart';
+import 'package:instagram_clone/features/replay/domain/usecases/create_replay_usecase.dart';
+import 'package:instagram_clone/features/replay/domain/usecases/delete_replay_usecase.dart';
+import 'package:instagram_clone/features/replay/domain/usecases/like_replay_usecase.dart';
+import 'package:instagram_clone/features/replay/domain/usecases/read_replays_usecase.dart';
+import 'package:instagram_clone/features/replay/domain/usecases/update_replay_usecase.dart';
+import 'package:instagram_clone/features/replay/presentation/bloc/replay_bloc.dart';
 import 'package:instagram_clone/features/storage/data/data_source/storage_remote_data_source.dart';
 import 'package:instagram_clone/features/storage/data/data_source/storage_remote_data_source_impl.dart';
 import 'package:instagram_clone/features/storage/data/repository/storage_repository_impl.dart';
@@ -261,5 +271,47 @@ void setup() {
     likeCommentUseCase: locator(),
     readCommentUseCase: locator(),
     updateCommentUseCase: locator(),
+  ));
+
+  // <--------------->
+  //!replay feature
+
+  //data source
+  locator.registerSingleton<ReplayRemoteDataSource>(
+    ReplayRemoteDataSourceImpl(
+      firebaseFirestore: locator(),
+      firebaseAuth: locator(),
+    ),
+  );
+
+  //repository
+  locator.registerSingleton<ReplayRepository>(
+    ReplayRepositoryImpl(replayRemoteDataSource: locator()),
+  );
+
+  //use case
+  locator.registerSingleton<CreateReplayUseCase>(
+      CreateReplayUseCase(replayRepository: locator()));
+
+  locator.registerSingleton<DeleteReplayUseCase>(
+      DeleteReplayUseCase(replayRepository: locator()));
+
+  locator.registerSingleton<LikeReplayUseCase>(
+      LikeReplayUseCase(replayRepository: locator()));
+
+  locator.registerSingleton<ReadReplaysUseCase>(
+      ReadReplaysUseCase(replayRepository: locator()));
+
+  locator.registerSingleton<UpdateReplayUseCase>(
+      UpdateReplayUseCase(replayRepository: locator()));
+
+  //bloc
+
+  locator.registerSingleton<ReplayBloc>(ReplayBloc(
+    createReplayUseCase: locator(),
+    deleteReplayUseCase: locator(),
+    likeReplayUseCase: locator(),
+    readReplaysUseCase: locator(),
+    updateReplayUseCase: locator(),
   ));
 }

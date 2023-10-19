@@ -9,6 +9,7 @@ import 'package:instagram_clone/features/intro/presentation/bloc/change_theme_st
 import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
 import 'package:instagram_clone/features/intro/presentation/pages/splash_page.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
+import 'package:instagram_clone/features/replay/presentation/bloc/replay_bloc.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 import 'package:instagram_clone/locator.dart';
 
@@ -25,6 +26,7 @@ Future<void> main() async {
         BlocProvider(create: (_) => locator<UserBloc>()),
         BlocProvider(create: (_) => locator<PostBloc>()),
         BlocProvider(create: (_) => locator<CommentBloc>()),
+        BlocProvider(create: (_) => locator<ReplayBloc>()),
         BlocProvider(create: (_) => BottomNavCubit()),
       ],
       child: const MyApp(),
