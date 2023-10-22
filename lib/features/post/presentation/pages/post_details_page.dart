@@ -455,10 +455,12 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
 
                                 return BlocBuilder<UserBloc, UserState>(
                                   builder: (context, userState) {
-                                    final user = userState.authStatus;
+                                    final userStatus = userState.profileStatus;
 
-                                    if (user is Authenticated) {
-                                      final uid = user.uid;
+                                    if (userStatus is ProfileSuccess) {
+                                      final uid = userStatus.user.uid;
+                                      final UserEntity user = userStatus.user;
+
                                       return CommentItem(
                                         onLongPress: () {
                                           if (uid == comment.creatorUid) {
@@ -471,7 +473,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                           }
                                           return;
                                         },
-                                        uid: uid,
+                                        user: user,
                                         comment: comment,
                                         size: size,
                                         index: index,
@@ -561,6 +563,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
+                                    if (commentController.text == "") return;
                                     BlocProvider.of<CommentBloc>(context).add(
                                       CreateCommentEvent(
                                         comment: CommentEntity(

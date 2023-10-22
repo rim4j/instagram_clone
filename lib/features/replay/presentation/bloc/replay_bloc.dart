@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:instagram_clone/features/replay/domain/entities/replay_entity.dart';
@@ -43,9 +45,89 @@ class ReplayBloc extends Bloc<ReplayEvent, ReplayState> {
     on<ReadReplaysEvent>(_onReadReplaysEvent);
     on<UpdateReplayEvent>(_onUpdateReplayEvent);
   }
-  _onCreateReplayEvent(CreateReplayEvent event, Emitter<ReplayState> emit) {}
-  _onDeleteReplayEvent(DeleteReplayEvent event, Emitter<ReplayState> emit) {}
-  _onLikeReplayEvent(LikeReplayEvent event, Emitter<ReplayState> emit) {}
-  _onReadReplaysEvent(ReadReplaysEvent event, Emitter<ReplayState> emit) {}
-  _onUpdateReplayEvent(UpdateReplayEvent event, Emitter<ReplayState> emit) {}
+  _onCreateReplayEvent(
+    CreateReplayEvent event,
+    Emitter<ReplayState> emit,
+  ) async {
+    emit(state.copyWith(newCreateReplayStatus: CreateReplayLoading()));
+
+    try {
+      await createReplayUseCase(event.replay);
+      emit(state.copyWith(newCreateReplayStatus: CreateReplaySuccess()));
+    } on SocketException catch (_) {
+      emit(state.copyWith(newCreateReplayStatus: CreateReplayFailed()));
+    } catch (e) {
+      emit(state.copyWith(newCreateReplayStatus: CreateReplayFailed()));
+    }
+  }
+
+  _onDeleteReplayEvent(
+    DeleteReplayEvent event,
+    Emitter<ReplayState> emit,
+  ) async {
+    emit(state.copyWith(newDeleteReplayStatus: DeleteReplayLoading()));
+
+    try {
+      await deleteReplayUseCase(event.replay);
+      emit(state.copyWith(newDeleteReplayStatus: DeleteReplaySuccess()));
+    } on SocketException catch (_) {
+      emit(state.copyWith(newDeleteReplayStatus: DeleteReplayFailed()));
+    } catch (e) {
+      emit(state.copyWith(newDeleteReplayStatus: DeleteReplayFailed()));
+    }
+  }
+
+  _onLikeReplayEvent(
+    LikeReplayEvent event,
+    Emitter<ReplayState> emit,
+  ) async {
+    emit(state.copyWith(newLikeReplayStatus: LikeReplayLoading()));
+
+    try {
+      await likeReplayUseCase(event.replay);
+      emit(state.copyWith(newLikeReplayStatus: LikeReplaySuccess()));
+    } on SocketException catch (_) {
+      emit(state.copyWith(newLikeReplayStatus: LikeReplayFailed()));
+    } catch (e) {
+      emit(state.copyWith(newLikeReplayStatus: LikeReplayFailed()));
+    }
+  }
+
+  _onReadReplaysEvent(
+    ReadReplaysEvent event,
+    Emitter<ReplayState> emit,
+  ) async {
+    emit(state.copyWith(newReadReplaysStatus: ReadReplaysLoading()));
+
+    try {
+      final streamRes = readReplaysUseCase(event.replay);
+
+      await emit.forEach(streamRes, onData: (dynamic data) {
+        final List<ReplayEntity> replays = data;
+
+        return state.copyWith(
+            newReadReplaysStatus: ReadReplaysSuccess(replays: replays));
+      });
+    } on SocketException catch (_) {
+      emit(state.copyWith(newReadReplaysStatus: ReadReplaysFailed()));
+    } catch (e) {
+      emit(state.copyWith(newReadReplaysStatus: ReadReplaysFailed()));
+    }
+  }
+
+  _onUpdateReplayEvent(
+    UpdateReplayEvent event,
+    Emitter<ReplayState> emit,
+  ) async {
+    emit(state.copyWith(newUpdateReplayStatus: UpdateReplaySuccess()));
+
+    try {
+      await updateReplayUseCase(event.replay);
+      emit(state.copyWith(newUpdateReplayStatus: UpdateReplaySuccess()));
+    } on SocketException catch (_) {
+      emit(state.copyWith(newUpdateReplayStatus: UpdateReplayFailed()));
+    } catch (e) {
+      emit(state.copyWith(newUpdateReplayStatus: UpdateReplayFailed()));
+    }
+  }
 }
