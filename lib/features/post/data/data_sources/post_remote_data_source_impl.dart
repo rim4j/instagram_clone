@@ -35,7 +35,19 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
       final postDocRef = await postCollection.doc(post.postId).get();
 
       if (!postDocRef.exists) {
-        postCollection.doc(post.postId).set(newPost);
+        postCollection.doc(post.postId).set(newPost).then((value) {
+          final userCollection = firebaseFirestore
+              .collection(FirebaseConst.users)
+              .doc(post.creatorUid);
+
+          userCollection.get().then((value) {
+            if (value.exists) {
+              final totalPosts = value.get('totalPosts');
+              userCollection.update({"totalPosts": totalPosts + 1});
+              return;
+            }
+          });
+        });
       } else {
         postCollection.doc(post.postId).update(newPost);
       }

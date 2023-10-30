@@ -135,13 +135,28 @@ class _CommentItemState extends State<CommentItem> {
                     final replaysStatus = replayState.readReplaysStatus;
 
                     if (replaysStatus is ReadReplaysLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
+                      return const Padding(
+                        padding: EdgeInsets.all(Dimens.large),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       );
                     }
 
                     if (replaysStatus is ReadReplaysSuccess) {
                       final List<ReplayEntity> replays = replaysStatus.replays;
+                      if (replays.isEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.all(Dimens.large),
+                          child: Center(
+                            child: Text(
+                              "No replays",
+                              style: robotoBold.copyWith(
+                                  color: colorScheme.onSecondary),
+                            ),
+                          ),
+                        );
+                      }
                       return Flexible(
                         child: Padding(
                             padding: const EdgeInsets.all(20),

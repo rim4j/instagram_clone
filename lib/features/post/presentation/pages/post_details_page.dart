@@ -20,7 +20,6 @@ import 'package:instagram_clone/features/post/presentation/bloc/status/single_po
 import 'package:instagram_clone/features/post/presentation/widgets/comment_item.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
-import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 import 'package:instagram_clone/locator.dart';
@@ -70,7 +69,6 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
-    bool isReply = false;
 
     Future<void> _dialogBuilder(BuildContext context) {
       return showDialog<void>(
