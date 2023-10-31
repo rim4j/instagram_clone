@@ -35,48 +35,54 @@ class PostItem extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                const SizedBox(width: Dimens.small),
-                //avatar
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: CachedNetworkImage(
-                    imageUrl: post.userProfileUrl! == ""
-                        ? IMAGES.defaultProfile
-                        : post.userProfileUrl!,
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(50)),
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, RouteNames.singleUserProfilePage,
+                    arguments: post.creatorUid);
+              },
+              child: Row(
+                children: [
+                  const SizedBox(width: Dimens.small),
+                  //avatar
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: CachedNetworkImage(
+                      imageUrl: post.userProfileUrl! == ""
+                          ? IMAGES.defaultProfile
+                          : post.userProfileUrl!,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50)),
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    placeholder: (context, url) => SizedBox(
-                      width: size.width / 3,
-                      height: size.width / 3,
-                      child: SpinKitPulse(
-                        color: colorScheme.primary,
-                        size: 100,
+                      placeholder: (context, url) => SizedBox(
+                        width: size.width / 3,
+                        height: size.width / 3,
+                        child: SpinKitPulse(
+                          color: colorScheme.primary,
+                          size: 100,
+                        ),
                       ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
                   ),
-                ),
-                const SizedBox(width: Dimens.small),
-                //name profile
-                Text(
-                  post.username!,
-                  style: robotoMedium.copyWith(
-                    fontSize: appFontSize.mediumFontSize,
+                  const SizedBox(width: Dimens.small),
+                  //name profile
+                  Text(
+                    post.username!,
+                    style: robotoMedium.copyWith(
+                      fontSize: appFontSize.mediumFontSize,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

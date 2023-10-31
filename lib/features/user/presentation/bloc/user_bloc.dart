@@ -15,6 +15,7 @@ import 'package:instagram_clone/features/user/domain/usecases/update_user_usecas
 import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/credential_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/single_user_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/update_profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/users_status.dart';
 
@@ -52,6 +53,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             usersStatus: UsersInit(),
             profileStatus: ProfileInit(),
             updateProfileStatus: UpdateProfileInit(),
+            singleUserStatus: SingleUserInit(),
           ),
         ) {
     on<AppStartedEvent>(_onAppStartedEvent);
@@ -65,6 +67,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UpdateProfileEvent>(_onUpdateProfileEvent);
     on<UpdateCoverImageEvent>(_onUpdateCoverImageEvent);
     on<UpdateProfileImageEvent>(_onUpdateProfileImageEvent);
+    on<GetSingleUserProfile>(_onGetSingleUserProfile);
   }
 
   void _onAppStartedEvent(
@@ -156,6 +159,23 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       return state.copyWith(newProfileStatus: ProfileSuccess(user: user.first));
     }).catchError((error) {
       emit(state.copyWith(newProfileStatus: ProfileFailed()));
+    });
+  }
+
+  Future<void> _onGetSingleUserProfile(
+    GetSingleUserProfile event,
+    Emitter<UserState> emit,
+  ) async {
+    emit(state.copyWith(newSingleUserStatus: SingleUserLoading()));
+    final streamRes = singleUserUseCase(event.userUid);
+
+    await emit.forEach(streamRes, onData: (dynamic data) {
+      final List<UserEntity> user = data;
+
+      return state.copyWith(
+          newSingleUserStatus: SingleUserCompleted(singleUser: user.first));
+    }).catchError((error) {
+      emit(state.copyWith(newSingleUserStatus: SingleUserFailed()));
     });
   }
 

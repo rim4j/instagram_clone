@@ -10,6 +10,7 @@ import 'package:instagram_clone/features/user/presentation/pages/login_page.dart
 import 'package:instagram_clone/features/user/presentation/pages/register_page.dart';
 import 'package:instagram_clone/features/post/presentation/pages/post_details_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/edit_profile_page.dart';
+import 'package:instagram_clone/features/user/presentation/pages/single_user_profile_page.dart';
 
 class OnGenerateRoute {
   OnGenerateRoute._();
@@ -53,6 +54,13 @@ class OnGenerateRoute {
       case RouteNames.changeImageProfilePage:
         if (args is String) {
           return routeBuilder(ChangeProfileImagePage(profileUrl: args));
+        } else {
+          return routeBuilder(const NoPageFound());
+        }
+
+      case RouteNames.singleUserProfilePage:
+        if (args is String) {
+          return routeBuilder(SingleUserProfilePage(userUid: args));
         } else {
           return routeBuilder(const NoPageFound());
         }

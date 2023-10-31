@@ -79,3 +79,10 @@ class UpdateProfileImageEvent extends UserEvent {
   @override
   List<Object?> get props => [user];
 }
+
+class GetSingleUserProfile extends UserEvent {
+  final String userUid;
+  GetSingleUserProfile({required this.userUid});
+  @override
+  List<Object?> get props => [userUid];
+}

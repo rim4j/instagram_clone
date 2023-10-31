@@ -8,4 +8,5 @@ class RouteNames {
   static const changeImageProfilePage = "changeImageProfilePage";
   static const changeCoverProfilePage = "changeCoverProfilePage";
   static const editPostPage = "editPostPage";
+  static const singleUserProfilePage = "singleUserProfilePage";
 }
