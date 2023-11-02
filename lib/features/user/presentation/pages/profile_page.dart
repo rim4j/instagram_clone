@@ -146,6 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
           if (profileStatus is ProfileSuccess) {
             final UserEntity profile = profileStatus.user;
+
             return SingleChildScrollView(
               child: Column(
                 children: [

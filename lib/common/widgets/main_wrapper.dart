@@ -32,7 +32,7 @@ class _MainWrapperState extends State<MainWrapper> {
     PageController pageController = PageController();
 
     List<Widget> pages = [
-      const HomePage(),
+      HomePage(pageController: pageController),
       const BookmarkPage(),
       const CreatePostPage(),
       const SearchPage(),
