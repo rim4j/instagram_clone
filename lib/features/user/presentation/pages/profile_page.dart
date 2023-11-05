@@ -12,6 +12,9 @@ import 'package:instagram_clone/config/theme/app_colors.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/change_theme_status.dart';
 import 'package:instagram_clone/features/intro/presentation/bloc/intro_bloc.dart';
+import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/status/posts_status.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
@@ -222,9 +225,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           child: CachedNetworkImage(
                             imageUrl: profile.profileUrl! == ""
-                                ? "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                                ? IMAGES.defaultProfile
                                 : profile.profileUrl!,
-                            // "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
                             imageBuilder: (context, imageProvider) => Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
@@ -407,44 +409,97 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-                  AnimationLimiter(
-                    child: GridView.custom(
-                      primary: false,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverQuiltedGridDelegate(
-                        mainAxisSpacing: 7,
-                        crossAxisSpacing: 7,
-                        crossAxisCount: isGrid ? 3 : 1,
-                        pattern: isGrid == true
-                            ? [
-                                const QuiltedGridTile(1, 1),
-                                const QuiltedGridTile(1, 1),
-                                const QuiltedGridTile(1, 1),
-                              ]
-                            : [
-                                const QuiltedGridTile(1, 1),
-                              ],
-                      ),
-                      childrenDelegate: SliverChildBuilderDelegate(
-                        childCount: 20,
-                        (context, index) {
-                          return AnimationConfiguration.staggeredGrid(
-                            position: index,
-                            columnCount: 3,
-                            duration: const Duration(seconds: 1),
-                            child: FadeInAnimation(
-                              child: ScaleAnimation(
-                                //check last index list for padding from bottom
-                                child: Container(
-                                  color: Colors.grey,
-                                ),
-                              ),
+                  BlocBuilder<PostBloc, PostState>(
+                    builder: (context, postState) {
+                      final PostsStatus postsStatus = postState.postsStatus;
+                      if (postsStatus is PostsLoading) {
+                        return SpinKitPulse(
+                          color: colorScheme.primary,
+                          size: 100,
+                        );
+                      }
+                      if (postsStatus is PostsCompleted) {
+                        final PostsCompleted postsCompleted =
+                            postState.postsStatus as PostsCompleted;
+
+                        final List<PostEntity> userPosts = postsCompleted.posts
+                            .where(
+                                (element) => element.creatorUid == profile.uid)
+                            .toList();
+
+                        return AnimationLimiter(
+                          child: GridView.custom(
+                            primary: false,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate: SliverQuiltedGridDelegate(
+                              mainAxisSpacing: 7,
+                              crossAxisSpacing: 7,
+                              crossAxisCount: isGrid ? 3 : 1,
+                              pattern: isGrid == true
+                                  ? [
+                                      const QuiltedGridTile(1, 1),
+                                      const QuiltedGridTile(1, 1),
+                                      const QuiltedGridTile(1, 1),
+                                    ]
+                                  : [
+                                      const QuiltedGridTile(1, 1),
+                                    ],
                             ),
-                          );
-                        },
-                      ),
-                    ),
+                            childrenDelegate: SliverChildBuilderDelegate(
+                              childCount: userPosts.length,
+                              (context, index) {
+                                final post = userPosts[index];
+
+                                return AnimationConfiguration.staggeredGrid(
+                                  position: index,
+                                  columnCount: 3,
+                                  duration: const Duration(seconds: 1),
+                                  child: FadeInAnimation(
+                                    child: ScaleAnimation(
+                                      //check last index list for padding from bottom
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushNamed(context,
+                                              RouteNames.postDetailsPage,
+                                              arguments: post);
+                                        },
+                                        child: CachedNetworkImage(
+                                          imageUrl: post.postImageUrl!,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              SizedBox(
+                                            width: size.width / 3,
+                                            height: size.width / 3,
+                                            child: SpinKitPulse(
+                                              color: colorScheme.primary,
+                                              size: 100,
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      }
+
+                      return Container();
+                    },
                   ),
                 ],
               ),

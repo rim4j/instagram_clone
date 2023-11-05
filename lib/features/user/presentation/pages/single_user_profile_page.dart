@@ -7,8 +7,12 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/images.dart';
 import 'package:instagram_clone/common/widgets/custom_button.dart';
+import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_colors.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
+import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
+import 'package:instagram_clone/features/post/presentation/bloc/status/posts_status.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/single_user_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
@@ -39,6 +43,7 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
+    final safePadding = MediaQuery.of(context).padding.top;
 
     return Scaffold(
       backgroundColor: colorScheme.background,
@@ -93,6 +98,18 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                             ),
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
+                          ),
+                        ),
+                        //drawer icon
+                        Positioned(
+                          left: 10,
+                          top: safePadding,
+                          child: IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(
+                              Icons.arrow_back_ios,
+                              color: colorScheme.onPrimary,
+                            ),
                           ),
                         ),
                       ],
@@ -318,44 +335,99 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                         ),
                       ],
                     ),
-                    AnimationLimiter(
-                      child: GridView.custom(
-                        primary: false,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverQuiltedGridDelegate(
-                          mainAxisSpacing: 7,
-                          crossAxisSpacing: 7,
-                          crossAxisCount: isGrid ? 3 : 1,
-                          pattern: isGrid == true
-                              ? [
-                                  const QuiltedGridTile(1, 1),
-                                  const QuiltedGridTile(1, 1),
-                                  const QuiltedGridTile(1, 1),
-                                ]
-                              : [
-                                  const QuiltedGridTile(1, 1),
-                                ],
-                        ),
-                        childrenDelegate: SliverChildBuilderDelegate(
-                          childCount: 20,
-                          (context, index) {
-                            return AnimationConfiguration.staggeredGrid(
-                              position: index,
-                              columnCount: 3,
-                              duration: const Duration(seconds: 1),
-                              child: FadeInAnimation(
-                                child: ScaleAnimation(
-                                  //check last index list for padding from bottom
-                                  child: Container(
-                                    color: Colors.grey,
-                                  ),
-                                ),
+                    BlocBuilder<PostBloc, PostState>(
+                      builder: (context, postState) {
+                        final PostsStatus postsStatus = postState.postsStatus;
+                        if (postsStatus is PostsLoading) {
+                          return SpinKitPulse(
+                            color: colorScheme.primary,
+                            size: 100,
+                          );
+                        }
+                        if (postsStatus is PostsCompleted) {
+                          final PostsCompleted postsCompleted =
+                              postState.postsStatus as PostsCompleted;
+
+                          final List<PostEntity> userPosts = postsCompleted
+                              .posts
+                              .where((element) =>
+                                  element.creatorUid == widget.userUid)
+                              .toList();
+
+                          return AnimationLimiter(
+                            child: GridView.custom(
+                              primary: false,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate: SliverQuiltedGridDelegate(
+                                mainAxisSpacing: 7,
+                                crossAxisSpacing: 7,
+                                crossAxisCount: isGrid ? 3 : 1,
+                                pattern: isGrid == true
+                                    ? [
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1),
+                                      ]
+                                    : [
+                                        const QuiltedGridTile(1, 1),
+                                      ],
                               ),
-                            );
-                          },
-                        ),
-                      ),
+                              childrenDelegate: SliverChildBuilderDelegate(
+                                childCount: userPosts.length,
+                                (context, index) {
+                                  final post = userPosts[index];
+
+                                  return AnimationConfiguration.staggeredGrid(
+                                    position: index,
+                                    columnCount: 3,
+                                    duration: const Duration(seconds: 1),
+                                    child: FadeInAnimation(
+                                      child: ScaleAnimation(
+                                        //check last index list for padding from bottom
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(context,
+                                                RouteNames.postDetailsPage,
+                                                arguments: post);
+                                          },
+                                          child: CachedNetworkImage(
+                                            imageUrl: post.postImageUrl!,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            placeholder: (context, url) =>
+                                                SizedBox(
+                                              width: size.width / 3,
+                                              height: size.width / 3,
+                                              child: SpinKitPulse(
+                                                color: colorScheme.primary,
+                                                size: 100,
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        }
+
+                        return Container();
+                      },
                     ),
                   ],
                 ),
