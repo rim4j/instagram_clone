@@ -33,12 +33,8 @@ class SignUpUserEvent extends UserEvent {
 }
 
 class GetUsersEvent extends UserEvent {
-  final UserEntity userEntity;
-  GetUsersEvent({
-    required this.userEntity,
-  });
   @override
-  List<Object?> get props => [userEntity];
+  List<Object?> get props => [];
 }
 
 class UpdateUserEvent extends UserEvent {

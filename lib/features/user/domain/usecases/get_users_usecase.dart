@@ -7,7 +7,7 @@ class GetUsersUseCase {
     required this.userRepository,
   });
 
-  Stream<List<UserEntity>> call(UserEntity user) {
-    return userRepository.getUsers(user);
+  Stream<List<UserEntity>> call() {
+    return userRepository.getUsers();
   }
 }

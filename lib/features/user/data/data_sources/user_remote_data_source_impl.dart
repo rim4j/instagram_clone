@@ -64,7 +64,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   }
 
   @override
-  Stream<List<UserEntity>> getUsers(UserEntity user) {
+  Stream<List<UserEntity>> getUsers() {
     final userCollection = firebaseFirestore.collection(FirebaseConst.users);
 
     return userCollection.snapshots().map((querySnapshot) =>

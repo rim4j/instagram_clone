@@ -54,6 +54,7 @@ import 'package:instagram_clone/features/user/data/repositories/user_repositroy_
 import 'package:instagram_clone/features/user/domain/repositories/user_repository.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_single_user_usecase.dart';
+import 'package:instagram_clone/features/user/domain/usecases/get_users_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/is_sign_in_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/sign_in_user_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/sign_out_user_usecase.dart';
@@ -169,6 +170,9 @@ void setup() {
   locator.registerSingleton<UpdateUserUseCase>(
       UpdateUserUseCase(userRepository: locator()));
 
+  locator.registerSingleton<GetUsersUseCase>(
+      GetUsersUseCase(userRepository: locator()));
+
   //bloc
   locator.registerSingleton<UserBloc>(
     UserBloc(
@@ -181,6 +185,7 @@ void setup() {
       updateUserUseCase: locator(),
       uploadProfileImageUseCase: locator(),
       uploadCoverImageUseCase: locator(),
+      getUsersUseCase: locator(),
     ),
   );
 

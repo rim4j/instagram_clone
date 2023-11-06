@@ -7,6 +7,7 @@ import 'package:instagram_clone/features/storage/domain/usecase/upload_profile_i
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_single_user_usecase.dart';
+import 'package:instagram_clone/features/user/domain/usecases/get_users_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/is_sign_in_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/sign_in_user_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/sign_out_user_usecase.dart';
@@ -30,7 +31,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   //credentials
   final SignInUserUseCase signInUserUseCase;
   final SignUpUserUseCase signUpUserUseCase;
-  // final GetUsersUseCase getUsersUseCase;
+  final GetUsersUseCase getUsersUseCase;
   final GetSingleUserUseCase singleUserUseCase;
   final UpdateUserUseCase updateUserUseCase;
   final UploadProfileImageUseCase uploadProfileImageUseCase;
@@ -46,6 +47,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     required this.updateUserUseCase,
     required this.uploadProfileImageUseCase,
     required this.uploadCoverImageUseCase,
+    required this.getUsersUseCase,
   }) : super(
           UserState(
             authStatus: AuthInit(),
@@ -61,7 +63,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<LoggedOutEvent>(_onLoggedOutEvent);
     on<SignInUserEvent>(_onSignInUserEvent);
     on<SignUpUserEvent>(_onSignUpUserEvent);
-    // on<GetUsersEvent>(_onGetUsersEvent);
+    on<GetUsersEvent>(_onGetUsersEvent);
     // on<UpdateUserEvent>(_onUpdateUserEvent);
     on<GetProfileEvent>(_onGetProfileEvent);
     on<UpdateProfileEvent>(_onUpdateProfileEvent);
@@ -248,23 +250,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  // void _onGetUsersEvent(
-  //   GetUsersEvent event,
-  //   Emitter<UserState> emit,
-  // ) async {
-  //   emit(state.copyWith(newUsersStatus: UsersLoading()));
-  //   try {
-  //     final streamRes = getUsersUseCase(event.userEntity);
+  void _onGetUsersEvent(
+    GetUsersEvent event,
+    Emitter<UserState> emit,
+  ) async {
+    emit(state.copyWith(newUsersStatus: UsersLoading()));
+    try {
+      final streamRes = getUsersUseCase();
 
-  //     streamRes.listen((users) {
-  //       emit(state.copyWith(newUsersStatus: UsersLoaded(users: users)));
-  //     });
-  //   } on SocketException catch (_) {
-  //     emit(state.copyWith(newUsersStatus: UsersFailed()));
-  //   } catch (e) {
-  //     emit(state.copyWith(newUsersStatus: UsersFailed()));
-  //   }
-  // }
+      await emit.forEach(
+        streamRes,
+        onData: (data) {
+          final List<UserEntity> users = data;
+
+          return state.copyWith(newUsersStatus: UsersLoaded(users: users));
+        },
+      );
+    } on SocketException catch (_) {
+      emit(state.copyWith(newUsersStatus: UsersFailed()));
+    } catch (e) {
+      emit(state.copyWith(newUsersStatus: UsersFailed()));
+    }
+  }
 
   // void _onUpdateUserEvent(
   //   UpdateUserEvent event,

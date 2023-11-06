@@ -100,7 +100,7 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                                 const Icon(Icons.error),
                           ),
                         ),
-                        //drawer icon
+                        //back icon
                         Positioned(
                           left: 10,
                           top: safePadding,
@@ -353,6 +353,12 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                               .where((element) =>
                                   element.creatorUid == widget.userUid)
                               .toList();
+
+                          if (userPosts.isEmpty) {
+                            return const Center(
+                              child: Text("no posts!"),
+                            );
+                          }
 
                           return AnimationLimiter(
                             child: GridView.custom(

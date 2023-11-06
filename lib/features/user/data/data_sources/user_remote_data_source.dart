@@ -7,7 +7,7 @@ abstract class UserRemoteDataSource {
   Future<bool> isSignIn();
   Future<void> signOut();
 
-  Stream<List<UserEntity>> getUsers(UserEntity user);
+  Stream<List<UserEntity>> getUsers();
   Stream<List<UserEntity>> getSingleUser(String uid);
   Future<String> getCurrentUid();
   Future<void> createUser(UserEntity user);

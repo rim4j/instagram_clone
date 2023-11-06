@@ -35,7 +35,9 @@ class _MainWrapperState extends State<MainWrapper> {
       HomePage(pageController: pageController),
       const BookmarkPage(),
       const CreatePostPage(),
-      const SearchPage(),
+      SearchPage(
+        pageController: pageController,
+      ),
       const ProfilePage(),
     ];
 

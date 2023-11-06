@@ -21,8 +21,7 @@ class UserRepositoryImpl implements UserRepository {
       userRemoteDataSource.getSingleUser(uid);
 
   @override
-  Stream<List<UserEntity>> getUsers(UserEntity user) =>
-      userRemoteDataSource.getUsers(user);
+  Stream<List<UserEntity>> getUsers() => userRemoteDataSource.getUsers();
 
   @override
   Future<bool> isSignIn() async => userRemoteDataSource.isSignIn();
