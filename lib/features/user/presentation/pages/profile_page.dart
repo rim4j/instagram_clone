@@ -427,6 +427,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                 (element) => element.creatorUid == profile.uid)
                             .toList();
 
+                        if (userPosts.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "No posts!",
+                              style: robotoMedium,
+                            ),
+                          );
+                        }
+
                         return AnimationLimiter(
                           child: GridView.custom(
                             primary: false,

@@ -193,6 +193,15 @@ class _SearchPageState extends State<SearchPage> {
                                     searchController.text.toLowerCase()))
                             .toList();
 
+                        if (filterUsers.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "User not found!",
+                              style: robotoMedium,
+                            ),
+                          );
+                        }
+
                         return Expanded(
                           child: ListView.builder(
                             itemCount: filterUsers.length,

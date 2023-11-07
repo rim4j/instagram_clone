@@ -14,6 +14,8 @@ import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/status/posts_status.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/follow_unfollow_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/single_user_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 
@@ -34,7 +36,7 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
   @override
   void initState() {
     BlocProvider.of<UserBloc>(context)
-        .add(GetSingleUserProfile(userUid: widget.userUid));
+        .add(GetSingleUserProfileEvent(userUid: widget.userUid));
     super.initState();
   }
 
@@ -256,10 +258,42 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                           //follow
                           Padding(
                             padding: const EdgeInsets.all(Dimens.large),
-                            child: CustomButton(
-                                title: "Follow",
-                                onTap: () {},
-                                appFontSize: appFontSize),
+                            child: BlocBuilder<UserBloc, UserState>(
+                              builder: (context, userState) {
+                                final currentUid =
+                                    userState.authStatus as Authenticated;
+                                final followUnFollowStatus =
+                                    userState.followUnFollowStatus;
+
+                                if (followUnFollowStatus
+                                    is FollowUnFollowLoading) {
+                                  return CustomButton(
+                                    title: "Follow",
+                                    loading: true,
+                                    onTap: () {},
+                                    appFontSize: appFontSize,
+                                  );
+                                }
+
+                                return CustomButton(
+                                  title: singleUser.followers!
+                                          .contains(currentUid.uid)
+                                      ? "UnFollow"
+                                      : "Follow",
+                                  onTap: () {
+                                    BlocProvider.of<UserBloc>(context).add(
+                                      GetFollowUnFollowEvent(
+                                        user: UserEntity(
+                                          uid: currentUid.uid,
+                                          otherUid: singleUser.uid,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  appFontSize: appFontSize,
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -355,8 +389,11 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                               .toList();
 
                           if (userPosts.isEmpty) {
-                            return const Center(
-                              child: Text("no posts!"),
+                            return Center(
+                              child: Text(
+                                "No posts!",
+                                style: robotoMedium,
+                              ),
                             );
                           }
 

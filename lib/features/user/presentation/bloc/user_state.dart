@@ -7,6 +7,7 @@ class UserState extends Equatable {
   final ProfileStatus profileStatus;
   final UpdateProfileStatus updateProfileStatus;
   final SingleUserStatus singleUserStatus;
+  final FollowUnFollowStatus followUnFollowStatus;
 
   const UserState({
     required this.authStatus,
@@ -15,6 +16,7 @@ class UserState extends Equatable {
     required this.profileStatus,
     required this.updateProfileStatus,
     required this.singleUserStatus,
+    required this.followUnFollowStatus,
   });
 
   UserState copyWith({
@@ -24,6 +26,7 @@ class UserState extends Equatable {
     ProfileStatus? newProfileStatus,
     UpdateProfileStatus? newUpdateProfileStatus,
     SingleUserStatus? newSingleUserStatus,
+    FollowUnFollowStatus? newFollowUnFollowStatus,
   }) {
     return UserState(
       authStatus: newAuthStatus ?? authStatus,
@@ -32,6 +35,7 @@ class UserState extends Equatable {
       profileStatus: newProfileStatus ?? profileStatus,
       updateProfileStatus: newUpdateProfileStatus ?? updateProfileStatus,
       singleUserStatus: newSingleUserStatus ?? singleUserStatus,
+      followUnFollowStatus: newFollowUnFollowStatus ?? followUnFollowStatus,
     );
   }
 
@@ -43,5 +47,6 @@ class UserState extends Equatable {
         profileStatus,
         updateProfileStatus,
         singleUserStatus,
+        followUnFollowStatus,
       ];
 }

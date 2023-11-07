@@ -76,9 +76,16 @@ class UpdateProfileImageEvent extends UserEvent {
   List<Object?> get props => [user];
 }
 
-class GetSingleUserProfile extends UserEvent {
+class GetSingleUserProfileEvent extends UserEvent {
   final String userUid;
-  GetSingleUserProfile({required this.userUid});
+  GetSingleUserProfileEvent({required this.userUid});
   @override
   List<Object?> get props => [userUid];
+}
+
+class GetFollowUnFollowEvent extends UserEvent {
+  final UserEntity user;
+  GetFollowUnFollowEvent({required this.user});
+  @override
+  List<Object?> get props => [user];
 }

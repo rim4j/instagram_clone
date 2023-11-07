@@ -5,6 +5,7 @@ import 'package:instagram_clone/common/resources/data_state.dart';
 import 'package:instagram_clone/features/storage/domain/usecase/upload_cover_image_usecase.dart';
 import 'package:instagram_clone/features/storage/domain/usecase/upload_profile_image_usecase.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
+import 'package:instagram_clone/features/user/domain/usecases/follow_unfollow_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_single_user_usecase.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_users_usecase.dart';
@@ -15,6 +16,7 @@ import 'package:instagram_clone/features/user/domain/usecases/sign_up_user_useca
 import 'package:instagram_clone/features/user/domain/usecases/update_user_usecase.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/credential_status.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/follow_unfollow_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/single_user_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/update_profile_status.dart';
@@ -36,6 +38,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final UpdateUserUseCase updateUserUseCase;
   final UploadProfileImageUseCase uploadProfileImageUseCase;
   final UploadCoverImageUseCase uploadCoverImageUseCase;
+  final FollowUnFollowUseCase followUnFollowUseCase;
 
   UserBloc({
     required this.signOutUseCase,
@@ -48,6 +51,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     required this.uploadProfileImageUseCase,
     required this.uploadCoverImageUseCase,
     required this.getUsersUseCase,
+    required this.followUnFollowUseCase,
   }) : super(
           UserState(
             authStatus: AuthInit(),
@@ -56,6 +60,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             profileStatus: ProfileInit(),
             updateProfileStatus: UpdateProfileInit(),
             singleUserStatus: SingleUserInit(),
+            followUnFollowStatus: FollowUnFollowInit(),
           ),
         ) {
     on<AppStartedEvent>(_onAppStartedEvent);
@@ -69,7 +74,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UpdateProfileEvent>(_onUpdateProfileEvent);
     on<UpdateCoverImageEvent>(_onUpdateCoverImageEvent);
     on<UpdateProfileImageEvent>(_onUpdateProfileImageEvent);
-    on<GetSingleUserProfile>(_onGetSingleUserProfile);
+    on<GetSingleUserProfileEvent>(_onGetSingleUserProfileEvent);
+    on<GetFollowUnFollowEvent>(_onGetFollowUnFollowEvent);
   }
 
   void _onAppStartedEvent(
@@ -164,8 +170,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     });
   }
 
-  Future<void> _onGetSingleUserProfile(
-    GetSingleUserProfile event,
+  Future<void> _onGetSingleUserProfileEvent(
+    GetSingleUserProfileEvent event,
     Emitter<UserState> emit,
   ) async {
     emit(state.copyWith(newSingleUserStatus: SingleUserLoading()));
@@ -270,6 +276,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(newUsersStatus: UsersFailed()));
     } catch (e) {
       emit(state.copyWith(newUsersStatus: UsersFailed()));
+    }
+  }
+
+  void _onGetFollowUnFollowEvent(
+    GetFollowUnFollowEvent event,
+    Emitter<UserState> emit,
+  ) async {
+    emit(state.copyWith(newFollowUnFollowStatus: FollowUnFollowLoading()));
+
+    try {
+      await followUnFollowUseCase(event.user);
+      emit(state.copyWith(newFollowUnFollowStatus: FollowUnFollowSuccess()));
+    } on SocketException catch (_) {
+      emit(state.copyWith(newFollowUnFollowStatus: FollowUnFollowFailed()));
+    } catch (_) {
+      emit(state.copyWith(newFollowUnFollowStatus: FollowUnFollowFailed()));
     }
   }
 

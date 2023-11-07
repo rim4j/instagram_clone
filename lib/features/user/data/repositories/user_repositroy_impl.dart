@@ -40,4 +40,8 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<void> updateUser(UserEntity user) async =>
       userRemoteDataSource.updateUser(user);
+
+  @override
+  Future<void> followUnFollowUser(UserEntity user) async =>
+      userRemoteDataSource.followUnFollowUser(user);
 }

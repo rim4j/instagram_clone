@@ -12,4 +12,5 @@ abstract class UserRepository {
   Future<String> getCurrentUid();
   Future<void> createUser(UserEntity user);
   Future<void> updateUser(UserEntity user);
+  Future<void> followUnFollowUser(UserEntity user);
 }
