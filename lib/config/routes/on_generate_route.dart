@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/common/params/post_details_params.dart';
 import 'package:instagram_clone/common/widgets/main_wrapper.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
@@ -28,8 +29,12 @@ class OnGenerateRoute {
         return routeBuilder(const RegisterPage());
 
       case RouteNames.postDetailsPage:
-        if (args is PostEntity) {
-          return routeBuilder(PostDetailsPage(post: args));
+        if (args is PostDetailsParams) {
+          return routeBuilder(PostDetailsPage(
+            postDetailsParams: PostDetailsParams(
+                postEntity: args.postEntity,
+                pageController: args.pageController),
+          ));
         } else {
           return routeBuilder(const NoPageFound());
         }

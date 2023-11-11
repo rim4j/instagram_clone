@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:instagram_clone/common/bloc/bottom_nav.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/images.dart';
+import 'package:instagram_clone/common/params/post_details_params.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/comment/domain/entities/comment_entity.dart';
@@ -20,6 +22,7 @@ import 'package:instagram_clone/features/post/presentation/bloc/status/single_po
 import 'package:instagram_clone/features/post/presentation/widgets/comment_item.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/usecases/get_current_uid_usecase.dart';
+import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/profile_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 import 'package:instagram_clone/locator.dart';
@@ -27,12 +30,9 @@ import 'package:readmore/readmore.dart';
 import 'package:uuid/uuid.dart';
 
 class PostDetailsPage extends StatefulWidget {
-  final PostEntity post;
+  final PostDetailsParams postDetailsParams;
 
-  const PostDetailsPage({
-    super.key,
-    required this.post,
-  });
+  const PostDetailsPage({super.key, required this.postDetailsParams});
 
   @override
   State<PostDetailsPage> createState() => _PostDetailsPageState();
@@ -55,11 +55,11 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
       BlocProvider.of<UserBloc>(context).add(GetProfileEvent(uid: uid));
     });
 
-    BlocProvider.of<PostBloc>(context)
-        .add(GetSinglePostEvent(postId: widget.post.postId!));
+    BlocProvider.of<PostBloc>(context).add(GetSinglePostEvent(
+        postId: widget.postDetailsParams.postEntity.postId!));
 
-    BlocProvider.of<CommentBloc>(context)
-        .add(ReadCommentEvent(postId: widget.post.postId!));
+    BlocProvider.of<CommentBloc>(context).add(
+        ReadCommentEvent(postId: widget.postDetailsParams.postEntity.postId!));
 
     super.initState();
   }
@@ -106,7 +106,8 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 onPressed: () {
                   Navigator.of(context).pop();
                   BlocProvider.of<PostBloc>(context).add(DeletePostEvent(
-                      post: PostEntity(postId: widget.post.postId)));
+                      post: PostEntity(
+                          postId: widget.postDetailsParams.postEntity.postId)));
                   Navigator.pop(context);
                 },
               ),
@@ -188,44 +189,77 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 children: [
                   const SizedBox(width: Dimens.small),
                   //avatar
-                  SizedBox(
-                    width: size.width * 0.1,
-                    height: size.width * 0.1,
-                    child: CachedNetworkImage(
-                      imageUrl: post.userProfileUrl! == ""
-                          ? IMAGES.defaultProfile
-                          : post.userProfileUrl!,
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
+                  BlocBuilder<UserBloc, UserState>(
+                    builder: (context, userState) {
+                      final AuthStatus auth = userState.authStatus;
+                      if (auth is Authenticated) {
+                        final uid = auth.uid;
+
+                        return GestureDetector(
+                          onTap: () {
+                            if (uid == post.creatorUid) {
+                              Navigator.pop(context);
+                              BlocProvider.of<BottomNavCubit>(context)
+                                  .changeSelectedIndex(4);
+
+                              widget.postDetailsParams.pageController
+                                  .jumpToPage(4);
+                            } else {
+                              Navigator.pushNamed(
+                                  context, RouteNames.singleUserProfilePage,
+                                  arguments: post.creatorUid);
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: size.width * 0.1,
+                                height: size.width * 0.1,
+                                child: CachedNetworkImage(
+                                  imageUrl: post.userProfileUrl! == ""
+                                      ? IMAGES.defaultProfile
+                                      : post.userProfileUrl!,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(50)),
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  placeholder: (context, url) => SizedBox(
+                                    width: size.width / 3,
+                                    height: size.width / 3,
+                                    child: SpinKitPulse(
+                                      color: colorScheme.primary,
+                                      size: 100,
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
+                              ),
+                              const SizedBox(width: Dimens.small),
+                              //name profile
+                              Text(
+                                post.username!,
+                                style: robotoMedium.copyWith(
+                                  fontSize: appFontSize.largeFontSize,
+                                  color: colorScheme.onSecondary,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                      placeholder: (context, url) => SizedBox(
-                        width: size.width / 3,
-                        height: size.width / 3,
-                        child: SpinKitPulse(
-                          color: colorScheme.primary,
-                          size: 100,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
+                        );
+                      }
+
+                      return Container();
+                    },
                   ),
-                  const SizedBox(width: Dimens.small),
-                  //name profile
-                  Text(
-                    post.username!,
-                    style: robotoMedium.copyWith(
-                      fontSize: appFontSize.largeFontSize,
-                      color: colorScheme.onSecondary,
-                    ),
-                  ),
+
                   SizedBox(width: size.width / 3),
                   BlocBuilder<UserBloc, UserState>(
                     builder: (context, userState) {
@@ -295,7 +329,8 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                               width: size.width,
                               height: size.width,
                               child: CachedNetworkImage(
-                                imageUrl: widget.post.postImageUrl!,
+                                imageUrl: widget
+                                    .postDetailsParams.postEntity.postImageUrl!,
                                 imageBuilder: (context, imageProvider) =>
                                     Container(
                                   decoration: BoxDecoration(
@@ -573,7 +608,8 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                           userProfileUrl: profile.profileUrl,
                                           description: commentController.text,
                                           creatorUid: profile.uid,
-                                          postId: widget.post.postId,
+                                          postId: widget.postDetailsParams
+                                              .postEntity.postId,
                                         ),
                                       ),
                                     );
