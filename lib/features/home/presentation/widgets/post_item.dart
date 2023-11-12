@@ -15,6 +15,7 @@ import 'package:instagram_clone/features/home/presentation/widgets/like_button.d
 import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/status/auth_status.dart';
 import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
+import 'package:instagram_clone/locator.dart';
 
 class PostItem extends StatelessWidget {
   const PostItem({
@@ -24,7 +25,6 @@ class PostItem extends StatelessWidget {
     required this.colorScheme,
     required this.onTap,
     required this.post,
-    required this.pageController,
   });
 
   final Size size;
@@ -32,10 +32,11 @@ class PostItem extends StatelessWidget {
   final ColorScheme colorScheme;
   final VoidCallback onTap;
   final PostEntity post;
-  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
+    final PageController handlePage = locator<PageController>();
+
     return Column(
       children: [
         Row(
@@ -51,7 +52,7 @@ class PostItem extends StatelessWidget {
                       if (uid == post.creatorUid) {
                         BlocProvider.of<BottomNavCubit>(context)
                             .changeSelectedIndex(4);
-                        pageController.jumpToPage(4);
+                        handlePage.jumpToPage(4);
                       } else {
                         Navigator.pushNamed(
                             context, RouteNames.singleUserProfilePage,

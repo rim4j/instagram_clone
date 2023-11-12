@@ -5,7 +5,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/images.dart';
-import 'package:instagram_clone/common/params/post_details_params.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/home/presentation/widgets/post_item.dart';
@@ -104,13 +103,11 @@ class HomePage extends StatelessWidget {
                     onTap: () => Navigator.pushNamed(
                       context,
                       RouteNames.postDetailsPage,
-                      arguments: PostDetailsParams(
-                          postEntity: post, pageController: pageController),
+                      arguments: post,
                     ),
                     size: size,
                     appFontSize: appFontSize,
                     colorScheme: colorScheme,
-                    pageController: pageController,
                   ),
                 );
               },

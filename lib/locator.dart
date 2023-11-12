@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:instagram_clone/features/comment/data/data_sources/comment_remote_data_source.dart';
 import 'package:instagram_clone/features/comment/data/data_sources/comment_remote_data_source_impl.dart';
@@ -66,6 +67,9 @@ import 'package:instagram_clone/features/user/presentation/bloc/user_bloc.dart';
 GetIt locator = GetIt.instance;
 
 void setup() {
+  //! page controller
+  final PageController pageController = PageController();
+  locator.registerLazySingleton(() => pageController);
   //!firebase
   final auth = FirebaseAuth.instance;
   final fireStore = FirebaseFirestore.instance;

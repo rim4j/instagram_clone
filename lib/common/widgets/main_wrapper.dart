@@ -8,6 +8,7 @@ import 'package:instagram_clone/features/user/presentation/pages/profile_page.da
 import 'package:instagram_clone/features/bookmark/presentation/pages/bookmark_page.dart';
 import 'package:instagram_clone/features/home/presentation/pages/home_page.dart';
 import 'package:instagram_clone/features/home/presentation/pages/search_page.dart';
+import 'package:instagram_clone/locator.dart';
 
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -29,7 +30,7 @@ class _MainWrapperState extends State<MainWrapper> {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     // Size size = MediaQuery.of(context).size;
     // AppFontSize appFontSize = AppFontSize(size: size);
-    PageController pageController = PageController();
+    final PageController pageController = locator<PageController>();
 
     List<Widget> pages = [
       HomePage(pageController: pageController),
@@ -38,7 +39,7 @@ class _MainWrapperState extends State<MainWrapper> {
       SearchPage(
         pageController: pageController,
       ),
-      const ProfilePage(),
+      ProfilePage(),
     ];
 
     return Scaffold(

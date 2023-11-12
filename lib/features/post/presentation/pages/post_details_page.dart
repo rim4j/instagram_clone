@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/common/bloc/bottom_nav.dart';
 import 'package:instagram_clone/common/constants/dimens.dart';
 import 'package:instagram_clone/common/constants/images.dart';
-import 'package:instagram_clone/common/params/post_details_params.dart';
 import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/comment/domain/entities/comment_entity.dart';
@@ -30,9 +29,9 @@ import 'package:readmore/readmore.dart';
 import 'package:uuid/uuid.dart';
 
 class PostDetailsPage extends StatefulWidget {
-  final PostDetailsParams postDetailsParams;
+  final PostEntity post;
 
-  const PostDetailsPage({super.key, required this.postDetailsParams});
+  const PostDetailsPage({super.key, required this.post});
 
   @override
   State<PostDetailsPage> createState() => _PostDetailsPageState();
@@ -55,11 +54,10 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
       BlocProvider.of<UserBloc>(context).add(GetProfileEvent(uid: uid));
     });
 
-    BlocProvider.of<PostBloc>(context).add(GetSinglePostEvent(
-        postId: widget.postDetailsParams.postEntity.postId!));
-
-    BlocProvider.of<CommentBloc>(context).add(
-        ReadCommentEvent(postId: widget.postDetailsParams.postEntity.postId!));
+    BlocProvider.of<PostBloc>(context)
+        .add(GetSinglePostEvent(postId: widget.post.postId!));
+    BlocProvider.of<CommentBloc>(context)
+        .add(ReadCommentEvent(postId: widget.post.postId!));
 
     super.initState();
   }
@@ -69,6 +67,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
+    final PageController handlePage = locator<PageController>();
 
     Future<void> _dialogBuilder(BuildContext context) {
       return showDialog<void>(
@@ -106,8 +105,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 onPressed: () {
                   Navigator.of(context).pop();
                   BlocProvider.of<PostBloc>(context).add(DeletePostEvent(
-                      post: PostEntity(
-                          postId: widget.postDetailsParams.postEntity.postId)));
+                      post: PostEntity(postId: widget.post.postId)));
                   Navigator.pop(context);
                 },
               ),
@@ -202,8 +200,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                               BlocProvider.of<BottomNavCubit>(context)
                                   .changeSelectedIndex(4);
 
-                              widget.postDetailsParams.pageController
-                                  .jumpToPage(4);
+                              handlePage.jumpToPage(4);
                             } else {
                               Navigator.pushNamed(
                                   context, RouteNames.singleUserProfilePage,
@@ -329,8 +326,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                               width: size.width,
                               height: size.width,
                               child: CachedNetworkImage(
-                                imageUrl: widget
-                                    .postDetailsParams.postEntity.postImageUrl!,
+                                imageUrl: widget.post.postImageUrl!,
                                 imageBuilder: (context, imageProvider) =>
                                     Container(
                                   decoration: BoxDecoration(
@@ -608,8 +604,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                           userProfileUrl: profile.profileUrl,
                                           description: commentController.text,
                                           creatorUid: profile.uid,
-                                          postId: widget.postDetailsParams
-                                              .postEntity.postId,
+                                          postId: widget.post.postId,
                                         ),
                                       ),
                                     );
