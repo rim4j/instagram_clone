@@ -13,10 +13,8 @@ import 'package:instagram_clone/features/post/presentation/bloc/post_bloc.dart';
 import 'package:instagram_clone/features/post/presentation/bloc/status/posts_status.dart';
 
 class HomePage extends StatelessWidget {
-  final PageController pageController;
   const HomePage({
     super.key,
-    required this.pageController,
   });
 
   @override

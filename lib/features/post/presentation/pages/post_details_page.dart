@@ -105,7 +105,9 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                 onPressed: () {
                   Navigator.of(context).pop();
                   BlocProvider.of<PostBloc>(context).add(DeletePostEvent(
-                      post: PostEntity(postId: widget.post.postId)));
+                      post: PostEntity(
+                          postId: widget.post.postId,
+                          creatorUid: widget.post.creatorUid)));
                   Navigator.pop(context);
                 },
               ),

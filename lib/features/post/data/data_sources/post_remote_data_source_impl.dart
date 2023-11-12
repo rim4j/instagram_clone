@@ -75,7 +75,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
         });
       });
     } catch (e) {
-      print(e);
+      print("some error occured $e");
     }
   }
 

@@ -33,13 +33,13 @@ class _MainWrapperState extends State<MainWrapper> {
     final PageController pageController = locator<PageController>();
 
     List<Widget> pages = [
-      HomePage(pageController: pageController),
+      const HomePage(),
       const BookmarkPage(),
       const CreatePostPage(),
       SearchPage(
         pageController: pageController,
       ),
-      ProfilePage(),
+      const ProfilePage(),
     ];
 
     return Scaffold(

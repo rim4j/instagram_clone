@@ -52,6 +52,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     Size size = MediaQuery.of(context).size;
     AppFontSize appFontSize = AppFontSize(size: size);
+    final PageController handlePage = locator<PageController>();
 
     Future pickGalleryImage() async {
       final pickedFile =
@@ -94,6 +95,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         selectedImage = null;
         descriptionController.clear();
       });
+      handlePage.jumpToPage(0);
     }
 
     Future _submitPost({required UserEntity user}) async {
