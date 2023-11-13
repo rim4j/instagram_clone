@@ -112,20 +112,96 @@ class _CreatePostPageState extends State<CreatePostPage> {
     return Scaffold(
       backgroundColor: colorScheme.background,
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            selectedImage != null
-                ? Padding(
-                    padding: const EdgeInsets.all(Dimens.medium),
-                    child: Column(
-                      children: [
-                        GestureDetector(
-                          onLongPress: () {
-                            setState(() {
-                              selectedImage = null;
-                            });
-                          },
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                selectedImage != null
+                    ? Padding(
+                        padding: const EdgeInsets.all(Dimens.medium),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onLongPress: () {
+                                setState(() {
+                                  selectedImage = null;
+                                });
+                              },
+                              onTap: () {
+                                _showModalBottomSheet(
+                                  context,
+                                  size,
+                                  colorScheme,
+                                  pickCameraImage,
+                                  pickGalleryImage,
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(Dimens.large),
+                                child: Image.file(
+                                  selectedImage!,
+                                  fit: BoxFit.cover,
+                                  height: size.width,
+                                  width: size.width,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: Dimens.large),
+                            TextField(
+                              controller: descriptionController,
+                              style: robotoRegular,
+                              decoration: InputDecoration(
+                                hintText: "description",
+                                hintStyle: robotoRegular,
+                              ),
+                            ),
+                            const SizedBox(height: Dimens.large),
+                            BlocBuilder<UserBloc, UserState>(
+                              builder: (context, userState) {
+                                final ProfileStatus profileStatus =
+                                    userState.profileStatus;
+
+                                if (profileStatus is ProfileSuccess) {
+                                  final UserEntity profile = profileStatus.user;
+
+                                  return Column(
+                                    children: [
+                                      CustomButton(
+                                        title: "post",
+                                        appFontSize: appFontSize,
+                                        loading: _uploading,
+                                        onTap: () {
+                                          _submitPost(user: profile);
+                                        },
+                                      ),
+                                      const SizedBox(height: Dimens.xLarge),
+                                    ],
+                                  );
+                                }
+
+                                if (profileStatus is ProfileLoading) {
+                                  return Column(
+                                    children: [
+                                      CustomButton(
+                                        title: "post",
+                                        loading: true,
+                                        appFontSize: appFontSize,
+                                        onTap: () async {},
+                                      ),
+                                      const SizedBox(height: Dimens.xLarge),
+                                    ],
+                                  );
+                                }
+                                return Container();
+                              },
+                            )
+                          ],
+                        ),
+                      )
+                    : Center(
+                        child: GestureDetector(
                           onTap: () {
                             _showModalBottomSheet(
                               context,
@@ -135,85 +211,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               pickGalleryImage,
                             );
                           },
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(Dimens.large),
-                            child: Image.file(
-                              selectedImage!,
-                              fit: BoxFit.cover,
-                              height: size.width,
-                              width: size.width,
+                          child: Container(
+                            width: size.width / 2,
+                            height: size.width / 2,
+                            decoration: BoxDecoration(
+                              color: colorScheme.onSecondaryContainer,
+                              borderRadius:
+                                  BorderRadius.circular(size.width / 2),
+                            ),
+                            child: Icon(
+                              FontAwesomeIcons.upload,
+                              size: 50,
+                              color: colorScheme.onSecondary,
                             ),
                           ),
                         ),
-                        const SizedBox(height: Dimens.large),
-                        TextField(
-                          controller: descriptionController,
-                          style: robotoRegular,
-                          decoration: InputDecoration(
-                            hintText: "description",
-                            hintStyle: robotoRegular,
-                          ),
-                        ),
-                        const SizedBox(height: Dimens.large),
-                        BlocBuilder<UserBloc, UserState>(
-                          builder: (context, userState) {
-                            final ProfileStatus profileStatus =
-                                userState.profileStatus;
-
-                            if (profileStatus is ProfileSuccess) {
-                              final UserEntity profile = profileStatus.user;
-
-                              return CustomButton(
-                                title: "post",
-                                appFontSize: appFontSize,
-                                loading: _uploading,
-                                onTap: () {
-                                  _submitPost(user: profile);
-                                },
-                              );
-                            }
-
-                            if (profileStatus is ProfileLoading) {
-                              return CustomButton(
-                                title: "post",
-                                loading: true,
-                                appFontSize: appFontSize,
-                                onTap: () async {},
-                              );
-                            }
-                            return Container();
-                          },
-                        )
-                      ],
-                    ),
-                  )
-                : Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        _showModalBottomSheet(
-                          context,
-                          size,
-                          colorScheme,
-                          pickCameraImage,
-                          pickGalleryImage,
-                        );
-                      },
-                      child: Container(
-                        width: size.width / 2,
-                        height: size.width / 2,
-                        decoration: BoxDecoration(
-                          color: colorScheme.onSecondaryContainer,
-                          borderRadius: BorderRadius.circular(size.width / 2),
-                        ),
-                        child: Icon(
-                          FontAwesomeIcons.upload,
-                          size: 50,
-                          color: colorScheme.onSecondary,
-                        ),
                       ),
-                    ),
-                  ),
-          ],
+              ],
+            ),
+          ),
         ),
       ),
     );

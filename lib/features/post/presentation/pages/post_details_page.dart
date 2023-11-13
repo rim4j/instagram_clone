@@ -185,6 +185,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
               iconTheme: IconThemeData(
                 color: colorScheme.onPrimary,
               ),
+              automaticallyImplyLeading: false,
               title: Row(
                 children: [
                   const SizedBox(width: Dimens.small),
@@ -195,63 +196,74 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                       if (auth is Authenticated) {
                         final uid = auth.uid;
 
-                        return GestureDetector(
-                          onTap: () {
-                            if (uid == post.creatorUid) {
-                              Navigator.pop(context);
-                              BlocProvider.of<BottomNavCubit>(context)
-                                  .changeSelectedIndex(4);
+                        return Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Icon(Icons.arrow_back_ios),
+                            ),
+                            const SizedBox(width: Dimens.medium),
+                            GestureDetector(
+                              onTap: () {
+                                if (uid == post.creatorUid) {
+                                  Navigator.pop(context);
+                                  BlocProvider.of<BottomNavCubit>(context)
+                                      .changeSelectedIndex(4);
 
-                              handlePage.jumpToPage(4);
-                            } else {
-                              Navigator.pushNamed(
-                                  context, RouteNames.singleUserProfilePage,
-                                  arguments: post.creatorUid);
-                            }
-                          },
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: size.width * 0.1,
-                                height: size.width * 0.1,
-                                child: CachedNetworkImage(
-                                  imageUrl: post.userProfileUrl! == ""
-                                      ? IMAGES.defaultProfile
-                                      : post.userProfileUrl!,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(50)),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
+                                  handlePage.jumpToPage(4);
+                                } else {
+                                  Navigator.pushNamed(
+                                      context, RouteNames.singleUserProfilePage,
+                                      arguments: post.creatorUid);
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: size.width * 0.1,
+                                    height: size.width * 0.1,
+                                    child: CachedNetworkImage(
+                                      imageUrl: post.userProfileUrl! == ""
+                                          ? IMAGES.defaultProfile
+                                          : post.userProfileUrl!,
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(50)),
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
                                       ),
+                                      placeholder: (context, url) => SizedBox(
+                                        width: size.width / 3,
+                                        height: size.width / 3,
+                                        child: SpinKitPulse(
+                                          color: colorScheme.primary,
+                                          size: 100,
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
                                     ),
                                   ),
-                                  placeholder: (context, url) => SizedBox(
-                                    width: size.width / 3,
-                                    height: size.width / 3,
-                                    child: SpinKitPulse(
-                                      color: colorScheme.primary,
-                                      size: 100,
+                                  const SizedBox(width: Dimens.small),
+                                  //name profile
+                                  Text(
+                                    post.username!,
+                                    style: robotoMedium.copyWith(
+                                      fontSize: appFontSize.largeFontSize,
+                                      color: colorScheme.onSecondary,
                                     ),
                                   ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                ),
+                                ],
                               ),
-                              const SizedBox(width: Dimens.small),
-                              //name profile
-                              Text(
-                                post.username!,
-                                style: robotoMedium.copyWith(
-                                  fontSize: appFontSize.largeFontSize,
-                                  color: colorScheme.onSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         );
                       }
 
@@ -259,7 +271,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                     },
                   ),
 
-                  SizedBox(width: size.width / 3),
+                  SizedBox(width: size.width / 4),
                   BlocBuilder<UserBloc, UserState>(
                     builder: (context, userState) {
                       final profileStatus = userState.profileStatus;
@@ -271,35 +283,47 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                         final UserEntity profile = profileStatus.user;
 
                         if (profile.username == post.username) {
-                          return PopupMenuButton(
-                            color: colorScheme.background,
-                            icon: Icon(
-                              FontAwesomeIcons.ellipsisVertical,
-                              color: colorScheme.onPrimary,
+                          return Expanded(
+                            child: PopupMenuButton(
+                              color: colorScheme.background,
+                              icon: Icon(
+                                FontAwesomeIcons.ellipsisVertical,
+                                color: colorScheme.onPrimary,
+                              ),
+                              onSelected: (value) {
+                                if (value == "/edit") {
+                                  Navigator.of(context).pushNamed(
+                                    RouteNames.editPostPage,
+                                    arguments: post,
+                                  );
+                                }
+                                if (value == "/delete") {
+                                  _dialogBuilder(context);
+                                }
+                              },
+                              itemBuilder: (BuildContext bc) {
+                                return [
+                                  PopupMenuItem(
+                                    value: '/edit',
+                                    child: Text(
+                                      "Edit",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: 14,
+                                        color: colorScheme.onSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: '/delete',
+                                    child: Text("Delete",
+                                        style: robotoRegular.copyWith(
+                                          fontSize: 14,
+                                          color: colorScheme.onSecondary,
+                                        )),
+                                  ),
+                                ];
+                              },
                             ),
-                            onSelected: (value) {
-                              if (value == "/edit") {
-                                Navigator.of(context).pushNamed(
-                                  RouteNames.editPostPage,
-                                  arguments: post,
-                                );
-                              }
-                              if (value == "/delete") {
-                                _dialogBuilder(context);
-                              }
-                            },
-                            itemBuilder: (BuildContext bc) {
-                              return const [
-                                PopupMenuItem(
-                                  value: '/edit',
-                                  child: Text("Edit"),
-                                ),
-                                PopupMenuItem(
-                                  value: '/delete',
-                                  child: Text("Delete"),
-                                ),
-                              ];
-                            },
                           );
                         } else {
                           return Container();

@@ -97,6 +97,7 @@ class _SearchPageState extends State<SearchPage> {
                         return Expanded(
                           child: AnimationLimiter(
                             child: GridView.custom(
+                              physics: const BouncingScrollPhysics(),
                               gridDelegate: SliverQuiltedGridDelegate(
                                 mainAxisSpacing: 7,
                                 crossAxisSpacing: 7,

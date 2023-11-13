@@ -125,101 +125,113 @@ class _EditPostPageState extends State<EditPostPage> {
       appBar: AppBar(
         backgroundColor: colorScheme.background,
         elevation: 0,
-        title: const Row(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: colorScheme.onSecondary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Row(
           children: [
-            SizedBox(width: Dimens.small),
+            const SizedBox(width: Dimens.small),
             //avatar
-            Text("Edit post"),
+            Text(
+              "Edit post",
+              style: robotoMedium.copyWith(
+                fontSize: 18,
+                color: colorScheme.onSecondary,
+              ),
+            ),
 
-            SizedBox(width: Dimens.small),
+            const SizedBox(width: Dimens.small),
           ],
         ),
       ),
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(Dimens.medium),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onLongPress: () {
-                      setState(() {
-                        selectedImage = null;
-                      });
-                    },
-                    onTap: () {
-                      _showModalBottomSheet(
-                        context,
-                        size,
-                        colorScheme,
-                        pickCameraImage,
-                        pickGalleryImage,
-                      );
-                    },
-                    child: selectedImage != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(Dimens.large),
-                            child: Image.file(
-                              selectedImage!,
-                              fit: BoxFit.cover,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(Dimens.medium),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onLongPress: () {
+                        setState(() {
+                          selectedImage = null;
+                        });
+                      },
+                      onTap: () {
+                        _showModalBottomSheet(
+                          context,
+                          size,
+                          colorScheme,
+                          pickCameraImage,
+                          pickGalleryImage,
+                        );
+                      },
+                      child: selectedImage != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(Dimens.large),
+                              child: Image.file(
+                                selectedImage!,
+                                fit: BoxFit.cover,
+                                height: size.width,
+                                width: size.width,
+                              ),
+                            )
+                          : SizedBox(
                               height: size.width,
                               width: size.width,
-                            ),
-                          )
-                        : SizedBox(
-                            height: size.width,
-                            width: size.width,
-                            child: CachedNetworkImage(
-                              imageUrl: widget.post.postImageUrl!,
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(50)),
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
+                              child: CachedNetworkImage(
+                                imageUrl: widget.post.postImageUrl!,
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(50)),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              placeholder: (context, url) => SizedBox(
-                                width: size.width / 3,
-                                height: size.width / 3,
-                                child: SpinKitPulse(
-                                  color: colorScheme.primary,
-                                  size: 100,
+                                placeholder: (context, url) => SizedBox(
+                                  width: size.width / 3,
+                                  height: size.width / 3,
+                                  child: SpinKitPulse(
+                                    color: colorScheme.primary,
+                                    size: 100,
+                                  ),
                                 ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
                             ),
-                          ),
-                  ),
-                  const SizedBox(height: Dimens.large),
-                  TextField(
-                    controller: descriptionController,
-                    style: robotoRegular,
-                    decoration: InputDecoration(
-                      hintText: "description",
-                      hintStyle: robotoRegular,
                     ),
-                  ),
-                  const SizedBox(height: Dimens.large),
-                  CustomButton(
-                    title: "Edit",
-                    appFontSize: appFontSize,
-                    loading: _uploading,
-                    onTap: () {
-                      _submitPost();
-                      // Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
+                    const SizedBox(height: Dimens.large),
+                    TextField(
+                      controller: descriptionController,
+                      style: robotoRegular,
+                      decoration: InputDecoration(
+                        hintText: "description",
+                        hintStyle: robotoRegular,
+                      ),
+                    ),
+                    const SizedBox(height: Dimens.large),
+                    CustomButton(
+                      title: "Edit",
+                      appFontSize: appFontSize,
+                      loading: _uploading,
+                      onTap: () {
+                        _submitPost();
+                        // Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

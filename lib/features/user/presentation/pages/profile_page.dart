@@ -278,14 +278,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Text(
                                       "${profile.followers!.length}",
                                       style: robotoBold.copyWith(
-                                        fontSize: 20,
+                                        fontSize: 18,
                                       ),
                                     ),
                                     const SizedBox(height: Dimens.small),
                                     Text(
                                       "Followers",
                                       style: robotoRegular.copyWith(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         color: colorScheme.onPrimary,
                                       ),
                                     ),
@@ -299,14 +299,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Text(
                                       "${profile.following!.length}",
                                       style: robotoBold.copyWith(
-                                        fontSize: 20,
+                                        fontSize: 18,
                                       ),
                                     ),
                                     const SizedBox(height: Dimens.small),
                                     Text(
                                       "Following",
                                       style: robotoRegular.copyWith(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         color: colorScheme.onPrimary,
                                       ),
                                     ),
@@ -320,14 +320,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Text(
                                       "${profile.totalPosts}",
                                       style: robotoBold.copyWith(
-                                        fontSize: 20,
+                                        fontSize: 18,
                                       ),
                                     ),
                                     const SizedBox(height: Dimens.small),
                                     Text(
                                       "Posts",
                                       style: robotoRegular.copyWith(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         color: colorScheme.onPrimary,
                                       ),
                                     ),

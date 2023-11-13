@@ -48,6 +48,10 @@ class _ChangeProfileImagePageState extends State<ChangeProfileImagePage> {
       appBar: AppBar(
         backgroundColor: colorScheme.background,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: colorScheme.onSecondary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(Dimens.large),

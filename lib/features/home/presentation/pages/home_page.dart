@@ -87,6 +87,7 @@ class HomePage extends StatelessWidget {
 
             return ListView.builder(
               itemCount: posts.length,
+              physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 final PostEntity post = posts[index];
                 return Padding(

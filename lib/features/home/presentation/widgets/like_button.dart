@@ -53,7 +53,7 @@ class LikeButton extends StatelessWidget {
                       isLiked
                           ? CupertinoIcons.heart_fill
                           : CupertinoIcons.heart,
-                      color: isLiked ? Colors.red : Colors.white,
+                      color: isLiked ? Colors.red : colorScheme.onPrimary,
                     );
                   },
                 ),

@@ -196,14 +196,14 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                                       Text(
                                         "${singleUser.followers!.length}",
                                         style: robotoBold.copyWith(
-                                          fontSize: 20,
+                                          fontSize: 18,
                                         ),
                                       ),
                                       const SizedBox(height: Dimens.small),
                                       Text(
                                         "Followers",
                                         style: robotoRegular.copyWith(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           color: colorScheme.onPrimary,
                                         ),
                                       ),
@@ -217,14 +217,14 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                                       Text(
                                         "${singleUser.following!.length}",
                                         style: robotoBold.copyWith(
-                                          fontSize: 20,
+                                          fontSize: 18,
                                         ),
                                       ),
                                       const SizedBox(height: Dimens.small),
                                       Text(
                                         "Following",
                                         style: robotoRegular.copyWith(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           color: colorScheme.onPrimary,
                                         ),
                                       ),
@@ -238,14 +238,14 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                                       Text(
                                         "${singleUser.totalPosts}",
                                         style: robotoBold.copyWith(
-                                          fontSize: 20,
+                                          fontSize: 18,
                                         ),
                                       ),
                                       const SizedBox(height: Dimens.small),
                                       Text(
                                         "Posts",
                                         style: robotoRegular.copyWith(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           color: colorScheme.onPrimary,
                                         ),
                                       ),
