@@ -9,4 +9,6 @@ class RouteNames {
   static const changeCoverProfilePage = "changeCoverProfilePage";
   static const editPostPage = "editPostPage";
   static const singleUserProfilePage = "singleUserProfilePage";
+  static const followersPage = "followersPage";
+  static const followingPage = "followingPage";
 }

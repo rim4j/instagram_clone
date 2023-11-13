@@ -4,8 +4,11 @@ import 'package:instagram_clone/config/routes/route_names.dart';
 import 'package:instagram_clone/config/theme/app_styles.dart';
 import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
 import 'package:instagram_clone/features/post/presentation/pages/edit_post_page.dart';
+import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/presentation/pages/change_cover_image_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/change_profile_image_page.dart';
+import 'package:instagram_clone/features/user/presentation/pages/followers_page.dart';
+import 'package:instagram_clone/features/user/presentation/pages/following_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/login_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/register_page.dart';
 import 'package:instagram_clone/features/post/presentation/pages/post_details_page.dart';
@@ -26,6 +29,22 @@ class OnGenerateRoute {
 
       case RouteNames.registerPage:
         return routeBuilder(const RegisterPage());
+
+      case RouteNames.followersPage:
+        if (args is UserEntity) {
+          return routeBuilder(FollowersPage(user: args));
+        } else {
+          return routeBuilder(const NoPageFound());
+        }
+
+      case RouteNames.followingPage:
+        if (args is UserEntity) {
+          return routeBuilder(FollowingPage(
+            user: args,
+          ));
+        } else {
+          return routeBuilder(const NoPageFound());
+        }
 
       case RouteNames.postDetailsPage:
         if (args is PostEntity) {

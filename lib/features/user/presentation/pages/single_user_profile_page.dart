@@ -189,46 +189,60 @@ class _SingleUserProfilePageState extends State<SingleUserProfilePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(
-                                  width: size.width / 5,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "${singleUser.followers!.length}",
-                                        style: robotoBold.copyWith(
-                                          fontSize: 18,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, RouteNames.followersPage,
+                                        arguments: singleUser);
+                                  },
+                                  child: SizedBox(
+                                    width: size.width / 5,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "${singleUser.followers!.length}",
+                                          style: robotoBold.copyWith(
+                                            fontSize: 18,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: Dimens.small),
-                                      Text(
-                                        "Followers",
-                                        style: robotoRegular.copyWith(
-                                          fontSize: 16,
-                                          color: colorScheme.onPrimary,
+                                        const SizedBox(height: Dimens.small),
+                                        Text(
+                                          "Followers",
+                                          style: robotoRegular.copyWith(
+                                            fontSize: 16,
+                                            color: colorScheme.onPrimary,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: size.width / 5,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "${singleUser.following!.length}",
-                                        style: robotoBold.copyWith(
-                                          fontSize: 18,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, RouteNames.followingPage,
+                                        arguments: singleUser);
+                                  },
+                                  child: SizedBox(
+                                    width: size.width / 5,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "${singleUser.following!.length}",
+                                          style: robotoBold.copyWith(
+                                            fontSize: 18,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: Dimens.small),
-                                      Text(
-                                        "Following",
-                                        style: robotoRegular.copyWith(
-                                          fontSize: 16,
-                                          color: colorScheme.onPrimary,
+                                        const SizedBox(height: Dimens.small),
+                                        Text(
+                                          "Following",
+                                          style: robotoRegular.copyWith(
+                                            fontSize: 16,
+                                            color: colorScheme.onPrimary,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
