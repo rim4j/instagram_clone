@@ -282,7 +282,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                       if (profileStatus is ProfileSuccess) {
                         final UserEntity profile = profileStatus.user;
 
-                        if (profile.username == post.username) {
+                        if (profile.uid == post.creatorUid) {
                           return Expanded(
                             child: PopupMenuButton(
                               color: colorScheme.background,

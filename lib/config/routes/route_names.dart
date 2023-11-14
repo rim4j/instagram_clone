@@ -11,4 +11,5 @@ class RouteNames {
   static const singleUserProfilePage = "singleUserProfilePage";
   static const followersPage = "followersPage";
   static const followingPage = "followingPage";
+  static const profilePage = "profilePage";
 }

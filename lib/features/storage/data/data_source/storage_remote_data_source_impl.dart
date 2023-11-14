@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:instagram_clone/features/storage/data/data_source/storage_remote_data_source.dart';
+import 'package:uuid/uuid.dart';
 
 class StorageRemoteDataSourceImpl implements StorageRemoteDataSource {
   final FirebaseStorage firebaseStorage;
@@ -46,10 +47,12 @@ class StorageRemoteDataSourceImpl implements StorageRemoteDataSource {
 
   @override
   Future<String> uploadPostImage(File file) async {
+    final uuid = const Uuid().v1();
+
     Reference ref = firebaseStorage
         .ref()
         .child("posts")
-        .child(firebaseAuth.currentUser!.uid);
+        .child("${firebaseAuth.currentUser!.uid}$uuid");
 
     final uploadTask = ref.putFile(file);
 

@@ -10,6 +10,7 @@ import 'package:instagram_clone/features/user/presentation/pages/change_profile_
 import 'package:instagram_clone/features/user/presentation/pages/followers_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/following_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/login_page.dart';
+import 'package:instagram_clone/features/user/presentation/pages/profile_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/register_page.dart';
 import 'package:instagram_clone/features/post/presentation/pages/post_details_page.dart';
 import 'package:instagram_clone/features/user/presentation/pages/edit_profile_page.dart';
@@ -57,6 +58,9 @@ class OnGenerateRoute {
 
       case RouteNames.editProfilePage:
         return routeBuilder(const EditProfilePage());
+
+      case RouteNames.profilePage:
+        return routeBuilder(const ProfilePage());
 
       case RouteNames.changeCoverProfilePage:
         if (args is String) {
