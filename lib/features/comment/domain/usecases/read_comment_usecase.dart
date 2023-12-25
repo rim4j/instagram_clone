@@ -1,14 +1,16 @@
+import 'package:instagram_clone/common/usecase/use_case.dart';
 import 'package:instagram_clone/features/comment/domain/entities/comment_entity.dart';
 import 'package:instagram_clone/features/comment/domain/repositories/comment_repository.dart';
 
-class ReadCommentUseCase {
+class ReadCommentUseCase implements StreamUseCase<List<CommentEntity>, String> {
   final CommentRepository commentRepository;
 
   ReadCommentUseCase({
     required this.commentRepository,
   });
 
-  Stream<List<CommentEntity>> call(String postId) {
-    return commentRepository.readComments(postId);
+  @override
+  Stream<List<CommentEntity>> call({String? params}) {
+    return commentRepository.readComments(params!);
   }
 }

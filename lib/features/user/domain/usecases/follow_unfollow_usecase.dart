@@ -1,13 +1,15 @@
+import 'package:instagram_clone/common/usecase/use_case.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/repositories/user_repository.dart';
 
-class FollowUnFollowUseCase {
+class FollowUnFollowUseCase implements UseCase<void, UserEntity> {
   final UserRepository userRepository;
   FollowUnFollowUseCase({
     required this.userRepository,
   });
 
-  Future<void> call(UserEntity user) {
-    return userRepository.followUnFollowUser(user);
+  @override
+  Future<void> call({UserEntity? params}) {
+    return userRepository.followUnFollowUser(params!);
   }
 }

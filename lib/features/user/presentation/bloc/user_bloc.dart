@@ -159,7 +159,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     Emitter<UserState> emit,
   ) async {
     emit(state.copyWith(newProfileStatus: ProfileLoading()));
-    final streamRes = singleUserUseCase(event.uid);
+    final streamRes = singleUserUseCase(params: event.uid);
 
     await emit.forEach(streamRes, onData: (dynamic data) {
       final List<UserEntity> user = data;
@@ -175,7 +175,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     Emitter<UserState> emit,
   ) async {
     emit(state.copyWith(newSingleUserStatus: SingleUserLoading()));
-    final streamRes = singleUserUseCase(event.userUid);
+    final streamRes = singleUserUseCase(params: event.userUid);
 
     await emit.forEach(streamRes, onData: (dynamic data) {
       final List<UserEntity> user = data;
@@ -286,7 +286,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(state.copyWith(newFollowUnFollowStatus: FollowUnFollowLoading()));
 
     try {
-      await followUnFollowUseCase(event.user);
+      await followUnFollowUseCase(params: event.user);
       emit(state.copyWith(newFollowUnFollowStatus: FollowUnFollowSuccess()));
     } on SocketException catch (_) {
       emit(state.copyWith(newFollowUnFollowStatus: FollowUnFollowFailed()));

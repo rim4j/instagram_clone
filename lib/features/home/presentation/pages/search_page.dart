@@ -94,75 +94,90 @@ class _SearchPageState extends State<SearchPage> {
 
                         final List<PostEntity> posts = postsCompleted.posts;
 
-                        return Expanded(
-                          child: AnimationLimiter(
-                            child: GridView.custom(
-                              physics: const BouncingScrollPhysics(),
-                              gridDelegate: SliverQuiltedGridDelegate(
-                                mainAxisSpacing: 7,
-                                crossAxisSpacing: 7,
-                                crossAxisCount: 3,
-                                repeatPattern:
-                                    QuiltedGridRepeatPattern.inverted,
-                                pattern: [
-                                  const QuiltedGridTile(2, 2),
-                                  const QuiltedGridTile(1, 1),
-                                  const QuiltedGridTile(1, 1),
-                                  const QuiltedGridTile(1, 1),
-                                  const QuiltedGridTile(1, 1),
-                                  const QuiltedGridTile(1, 1),
-                                ],
-                              ),
-                              childrenDelegate: SliverChildBuilderDelegate(
-                                childCount: posts.length,
-                                (context, index) {
-                                  final post = posts[index];
-                                  return AnimationConfiguration.staggeredGrid(
-                                    position: index,
-                                    columnCount: 3,
-                                    duration: const Duration(seconds: 1),
-                                    child: FadeInAnimation(
-                                      child: ScaleAnimation(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(context,
-                                                RouteNames.postDetailsPage,
-                                                arguments: post);
-                                          },
-                                          child: CachedNetworkImage(
-                                            imageUrl: post.postImageUrl!,
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover,
+                        return posts.isEmpty
+                            ? Center(
+                                child: Text(
+                                  "no posts!",
+                                  style: robotoMedium.copyWith(
+                                    color: colorScheme.onPrimary,
+                                    fontSize: appFontSize.largeFontSize,
+                                  ),
+                                ),
+                              )
+                            : Expanded(
+                                child: AnimationLimiter(
+                                  child: GridView.custom(
+                                    physics: const BouncingScrollPhysics(),
+                                    gridDelegate: SliverQuiltedGridDelegate(
+                                      mainAxisSpacing: 7,
+                                      crossAxisSpacing: 7,
+                                      crossAxisCount: 3,
+                                      repeatPattern:
+                                          QuiltedGridRepeatPattern.inverted,
+                                      pattern: [
+                                        const QuiltedGridTile(2, 2),
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1),
+                                        const QuiltedGridTile(1, 1),
+                                      ],
+                                    ),
+                                    childrenDelegate:
+                                        SliverChildBuilderDelegate(
+                                      childCount: posts.length,
+                                      (context, index) {
+                                        final post = posts[index];
+                                        return AnimationConfiguration
+                                            .staggeredGrid(
+                                          position: index,
+                                          columnCount: 3,
+                                          duration: const Duration(seconds: 1),
+                                          child: FadeInAnimation(
+                                            child: ScaleAnimation(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pushNamed(
+                                                      context,
+                                                      RouteNames
+                                                          .postDetailsPage,
+                                                      arguments: post);
+                                                },
+                                                child: CachedNetworkImage(
+                                                  imageUrl: post.postImageUrl!,
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) =>
+                                                      SizedBox(
+                                                    width: size.width / 3,
+                                                    height: size.width / 3,
+                                                    child: SpinKitPulse(
+                                                      color:
+                                                          colorScheme.primary,
+                                                      size: 100,
+                                                    ),
+                                                  ),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      const Icon(Icons.error),
                                                 ),
                                               ),
                                             ),
-                                            placeholder: (context, url) =>
-                                                SizedBox(
-                                              width: size.width / 3,
-                                              height: size.width / 3,
-                                              child: SpinKitPulse(
-                                                color: colorScheme.primary,
-                                                size: 100,
-                                              ),
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    const Icon(Icons.error),
                                           ),
-                                        ),
-                                      ),
+                                        );
+                                      },
                                     ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        );
+                                  ),
+                                ),
+                              );
                       }
 
                       return Container();

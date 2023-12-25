@@ -52,7 +52,7 @@ class ReplayBloc extends Bloc<ReplayEvent, ReplayState> {
     emit(state.copyWith(newCreateReplayStatus: CreateReplayLoading()));
 
     try {
-      await createReplayUseCase(event.replay);
+      await createReplayUseCase(params: event.replay);
       emit(state.copyWith(newCreateReplayStatus: CreateReplaySuccess()));
     } on SocketException catch (_) {
       emit(state.copyWith(newCreateReplayStatus: CreateReplayFailed()));
@@ -68,7 +68,7 @@ class ReplayBloc extends Bloc<ReplayEvent, ReplayState> {
     emit(state.copyWith(newDeleteReplayStatus: DeleteReplayLoading()));
 
     try {
-      await deleteReplayUseCase(event.replay);
+      await deleteReplayUseCase(params: event.replay);
       emit(state.copyWith(newDeleteReplayStatus: DeleteReplaySuccess()));
     } on SocketException catch (_) {
       emit(state.copyWith(newDeleteReplayStatus: DeleteReplayFailed()));
@@ -84,7 +84,7 @@ class ReplayBloc extends Bloc<ReplayEvent, ReplayState> {
     emit(state.copyWith(newLikeReplayStatus: LikeReplayLoading()));
 
     try {
-      await likeReplayUseCase(event.replay);
+      await likeReplayUseCase(params: event.replay);
       emit(state.copyWith(newLikeReplayStatus: LikeReplaySuccess()));
     } on SocketException catch (_) {
       emit(state.copyWith(newLikeReplayStatus: LikeReplayFailed()));
@@ -100,7 +100,7 @@ class ReplayBloc extends Bloc<ReplayEvent, ReplayState> {
     emit(state.copyWith(newReadReplaysStatus: ReadReplaysLoading()));
 
     try {
-      final streamRes = readReplaysUseCase(event.replay);
+      final streamRes = readReplaysUseCase(params: event.replay);
 
       await emit.forEach(streamRes, onData: (dynamic data) {
         final List<ReplayEntity> replays = data;
@@ -122,7 +122,7 @@ class ReplayBloc extends Bloc<ReplayEvent, ReplayState> {
     emit(state.copyWith(newUpdateReplayStatus: UpdateReplaySuccess()));
 
     try {
-      await updateReplayUseCase(event.replay);
+      await updateReplayUseCase(params: event.replay);
       emit(state.copyWith(newUpdateReplayStatus: UpdateReplaySuccess()));
     } on SocketException catch (_) {
       emit(state.copyWith(newUpdateReplayStatus: UpdateReplayFailed()));

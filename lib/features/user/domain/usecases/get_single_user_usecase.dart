@@ -1,13 +1,15 @@
+import 'package:instagram_clone/common/usecase/use_case.dart';
 import 'package:instagram_clone/features/user/domain/entities/user_entity.dart';
 import 'package:instagram_clone/features/user/domain/repositories/user_repository.dart';
 
-class GetSingleUserUseCase {
+class GetSingleUserUseCase implements StreamUseCase<List<UserEntity>, String> {
   final UserRepository userRepository;
   GetSingleUserUseCase({
     required this.userRepository,
   });
 
-  Stream<List<UserEntity>> call(String uid) {
-    return userRepository.getSingleUser(uid);
+  @override
+  Stream<List<UserEntity>> call({String? params}) {
+    return userRepository.getSingleUser(params!);
   }
 }

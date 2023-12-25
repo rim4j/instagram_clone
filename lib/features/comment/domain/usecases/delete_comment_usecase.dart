@@ -1,14 +1,15 @@
+import 'package:instagram_clone/common/usecase/use_case.dart';
 import 'package:instagram_clone/features/comment/domain/entities/comment_entity.dart';
 import 'package:instagram_clone/features/comment/domain/repositories/comment_repository.dart';
 
-class DeleteCommentUseCase {
+class DeleteCommentUseCase implements UseCase<void, CommentEntity> {
   final CommentRepository commentRepository;
 
   DeleteCommentUseCase({
     required this.commentRepository,
   });
-
-  Future<void> call(CommentEntity comment) {
-    return commentRepository.deleteComment(comment);
+  @override
+  Future<void> call({CommentEntity? params}) {
+    return commentRepository.deleteComment(params!);
   }
 }

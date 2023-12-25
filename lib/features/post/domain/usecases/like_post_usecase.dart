@@ -1,13 +1,14 @@
+import 'package:instagram_clone/common/usecase/use_case.dart';
 import 'package:instagram_clone/features/post/domain/entities/post_entity.dart';
 import 'package:instagram_clone/features/post/domain/repositories/post_repository.dart';
 
-class LikePostUseCase {
+class LikePostUseCase implements UseCase<void, PostEntity> {
   final PostRepository postRepository;
   LikePostUseCase({
     required this.postRepository,
   });
-
-  Future<void> call(PostEntity post) {
-    return postRepository.likePost(post);
+  @override
+  Future<void> call({PostEntity? params}) {
+    return postRepository.likePost(params!);
   }
 }

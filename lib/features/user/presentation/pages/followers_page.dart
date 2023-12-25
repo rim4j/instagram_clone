@@ -77,7 +77,7 @@ class FollowersPage extends StatelessWidget {
                                   padding: const EdgeInsets.all(Dimens.small),
                                   child: StreamBuilder<List<UserEntity>>(
                                       stream: locator<GetSingleUserUseCase>()
-                                          .call(uid),
+                                          .call(params: uid),
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData == false) {
                                           return CircularProgressIndicator(

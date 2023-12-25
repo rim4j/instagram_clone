@@ -76,16 +76,23 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     emit(state.copyWith(newSinglePostStatus: SinglePostLoading()));
 
     try {
-      final streamRes = readSinglePostUseCase(event.postId);
+      final streamRes = readSinglePostUseCase(params: event.postId);
 
       await emit.forEach(streamRes, onData: (dynamic data) {
-        final List<PostEntity> posts = data;
-        final PostEntity singlePost = posts.first;
+        final PostEntity? singlePost = data.first;
 
-        return state.copyWith(
-            newSinglePostStatus: SinglePostCompleted(post: singlePost));
+        if (singlePost != null) {
+          print("not empty");
+          return state.copyWith(
+              newSinglePostStatus: SinglePostCompleted(post: singlePost));
+        } else {
+          print("empty");
+          return state.copyWith(newSinglePostStatus: SinglePostFailed());
+        }
       });
-    } catch (e) {
+    } on SocketException catch (_) {
+      emit(state.copyWith(newSinglePostStatus: SinglePostFailed()));
+    } catch (_) {
       emit(state.copyWith(newSinglePostStatus: SinglePostFailed()));
     }
   }
@@ -96,7 +103,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   ) async {
     emit(state.copyWith(newUpdatePostStatus: UpdatePostLoading()));
     try {
-      await updatePostUseCase(event.post);
+      await updatePostUseCase(params: event.post);
       emit(state.copyWith(newUpdatePostStatus: UpdatePostCompleted()));
     } on SocketException catch (_) {
       emit(state.copyWith(newUpdatePostStatus: UpdatePostFailed()));
@@ -111,7 +118,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   ) async {
     emit(state.copyWith(newDeletePostStatus: DeletePostLoading()));
     try {
-      await deletePostUseCase(event.post);
+      await deletePostUseCase(params: event.post);
       emit(state.copyWith(newDeletePostStatus: DeletePostCompleted()));
     } on SocketException catch (_) {
       emit(state.copyWith(newDeletePostStatus: DeletePostFailed()));
@@ -126,7 +133,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   ) async {
     emit(state.copyWith(newLikePostStatus: LikePostLoading()));
     try {
-      await likePostUseCase(event.post);
+      await likePostUseCase(params: event.post);
       emit(state.copyWith(newLikePostStatus: LikePostCompleted()));
     } on SocketException catch (_) {
       emit(state.copyWith(newLikePostStatus: LikePostFailed()));
@@ -141,7 +148,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   ) async {
     emit(state.copyWith(newCreatePostStatus: CreatePostLoading()));
     try {
-      await createPostUseCase(event.post);
+      await createPostUseCase(params: event.post);
       emit(state.copyWith(newCreatePostStatus: CreatePostCompleted()));
     } on SocketException catch (_) {
       emit(state.copyWith(newCreatePostStatus: CreatePostFailed()));

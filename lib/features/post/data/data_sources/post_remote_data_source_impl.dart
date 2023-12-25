@@ -136,12 +136,12 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
   Stream<List<PostEntity>> readSinglePost(String postId) {
     final postCollection = firebaseFirestore
         .collection(FirebaseConst.posts)
-        // .orderBy("createAt", descending: true)
         .where("postId", isEqualTo: postId)
         .limit(1);
 
     final post = postCollection.snapshots().map((querySnapshot) =>
         querySnapshot.docs.map((e) => PostModel.fromSnapshot(e)).toList());
+
     return post;
   }
 }

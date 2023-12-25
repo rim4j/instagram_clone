@@ -51,7 +51,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     emit(state.copyWith(newCreateCommentStatus: CreateCommentLoading()));
 
     try {
-      await createCommentUseCase(event.comment);
+      await createCommentUseCase(params: event.comment);
       emit(state.copyWith(newCreateCommentStatus: CreateCommentSuccess()));
     } on SocketException catch (_) {
       emit(state.copyWith(newCreateCommentStatus: CreateCommentFailed()));
@@ -66,7 +66,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   ) async {
     emit(state.copyWith(newDeleteCommentStatus: DeleteCommentLoading()));
     try {
-      await deleteCommentUseCase(event.comment);
+      await deleteCommentUseCase(params: event.comment);
       emit(state.copyWith(newDeleteCommentStatus: DeleteCommentSuccess()));
     } on SocketException catch (_) {
       emit(state.copyWith(newDeleteCommentStatus: DeleteCommentFailed()));
@@ -81,7 +81,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   ) async {
     emit(state.copyWith(newLikeCommentStatus: LikeCommentLoading()));
     try {
-      await likeCommentUseCase(event.comment);
+      await likeCommentUseCase(params: event.comment);
       emit(state.copyWith(newLikeCommentStatus: LikeCommentSuccess()));
     } on SocketException catch (_) {
       state.copyWith(newLikeCommentStatus: LikeCommentFailed());
@@ -97,7 +97,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     emit(state.copyWith(newReadCommentStatus: ReadCommentLoading()));
 
     try {
-      final streamRes = readCommentUseCase(event.postId);
+      final streamRes = readCommentUseCase(params: event.postId);
 
       await emit.forEach(streamRes, onData: (dynamic data) {
         final List<CommentEntity> comments = data;
@@ -118,7 +118,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   ) async {
     emit(state.copyWith(newUpdateCommentStatus: UpdateCommentLoading()));
     try {
-      await updateCommentUseCase(event.comment);
+      await updateCommentUseCase(params: event.comment);
       emit(state.copyWith(newUpdateCommentStatus: UpdateCommentSuccess()));
     } on SocketException catch (_) {
       state.copyWith(newUpdateCommentStatus: UpdateCommentFailed());
